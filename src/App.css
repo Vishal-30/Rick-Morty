@@ -126,7 +126,6 @@ body {
   margin-bottom: 0.5rem;
   display: flex;
   flex-wrap: wrap;
-  overflow: auto;
 }
 
 .episode--name {
@@ -134,7 +133,6 @@ body {
   font-weight: bold;
   margin-bottom: 0.5rem;
   display: inline- block;
-  overflow: auto;
 }
 
 .card--episodes {
@@ -144,7 +142,6 @@ body {
   flex-direction: column;
   text-align: left;
   flex-wrap: wrap;
-  overflow: auto;
 }
 
 .card--center {
@@ -204,7 +201,7 @@ body {
   border-radius: 3px;
   max-width: 80vw;
   max-height: 90vh;
-  overflow: scroll;
+  overflow-y: scroll;
 }
 
 .close-modal {
