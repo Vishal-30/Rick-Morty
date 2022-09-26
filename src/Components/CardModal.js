@@ -4,6 +4,8 @@ import Episodes from './Episode';
 const CardModal = (props) => {
   let { id, image, name, status, gender, location, episode } = props.card;
   const [modal, setModal] = useState(true);
+
+
   const toggleButton = () => {
     setModal(false);
   };
@@ -30,7 +32,8 @@ const CardModal = (props) => {
             </div>
             <div className="card--name">
             <span>Episodes:</span>
-            <Episodes episodeName={episode.map(e => `${e.substring(e.lastIndexOf('/') + 1)}|`)} />
+            {episode.map(e => `${e.substring(e.lastIndexOf('/') + 1)}|`).map(x => <Episodes idNum={x.slice(0,-1)} />)}
+
             </div>
             <button className="close-modal" onClick={toggleButton}>
               X
