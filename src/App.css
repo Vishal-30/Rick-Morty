@@ -1,0 +1,215 @@
+body {
+  overflow-x: hidden;
+  font-family: 'Inter', sans-serif;
+}
+
+.navbar {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar .container {
+  width: 100vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: auto;
+  background-color: #ffeed0;
+  padding: 1.5rem 8rem;
+}
+
+.navbar-brand {
+  display: inline-block;
+  padding-top: 0.3125rem;
+  padding-bottom: 0.3125rem;
+  margin-right: 1rem;
+  font-size: 1.25rem !important;
+  font-weight: bold;
+  background-color: #cccccc;
+  line-height: inherit;
+  white-space: nowrap;
+  text-decoration: none;
+  padding: 1rem 1.5rem;
+  border-radius: 15px;
+}
+
+.navbar-brand:hover,
+.navbar-brand:focus {
+  text-decoration: none;
+}
+
+.navbar-links {
+  gap: 1rem;
+  display: flex;
+}
+
+.navbar-links a {
+  color: #000;
+  text-decoration: none;
+  font-size: 1.5rem;
+  border-bottom: 2px solid #000;
+
+}
+
+.navbar-links a:hover {
+  color: blue;
+  border-bottom: 2px solid blue;
+}
+
+.search-form {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  align-items: center;
+  padding-bottom: 1rem;
+}
+
+.search-input {
+  font-size: 1rem;
+  border: 1px solid #000;
+  padding: 0.25rem;
+  width: 30vw;
+
+}
+
+.search-btn {
+  font-size: 1rem;
+  font-weight: bold;
+  border: 1px solid #000;
+  padding: 0.25rem;
+}
+
+.App {
+  text-align: center;
+}
+
+.App-header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.App--container {
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: auto;
+  gap: 10px;
+  text-align: center;
+  margin-inline: auto;
+}
+
+.card {
+  display: flex;
+  position: relative;
+  color: #000;
+  margin-block: 5px;
+  justify-content: center;
+  border: 1px solid #222;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.card--image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 5px 5px 0 0;
+
+}
+
+.card--name {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  overflow: auto;
+}
+
+.card--center {
+  display: flex;
+  justify-content: center;
+}
+
+.card--name span {
+  font-size: 1rem;
+  font-weight: normal;
+  margin-right: 0.5rem;
+}
+
+.star {
+  bottom: 5px;
+  left: 5px;
+  position: absolute;
+  width: 20px;
+  max-width: 100%;
+  height: auto;
+}
+
+.active-modal {
+  overflow-y: hidden;
+}
+
+.btn-modal {
+  padding: 10px 20px;
+  display: block;
+  margin: 100px auto 0;
+  font-size: 18px;
+}
+
+.modal,
+.overlay {
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  position: fixed;
+}
+
+.overlay {
+  background: rgba(49, 49, 49, 0.8);
+}
+
+.modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  line-height: 1.4;
+  background: #f1f1f1;
+  padding: 14px 28px;
+  border-radius: 3px;
+  max-width: 75vw;
+  min-width: 30vw;
+}
+
+.close-modal {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 5px 7px;
+  cursor: pointer;
+}
+
+ul.pagination {
+  display: flex;
+  text-decoration: none;
+  gap: 0.75rem;
+  list-style-type: none;
+  justify-content: center;
+  font-size: 1rem;
+  color: #000;
+  flex-wrap: wrap;
+  width: 60vw;
+  margin: auto;
+  margin-block: 1.5rem;
+}
+
+.page-item button {
+  cursor: pointer;
+}
