@@ -164,10 +164,6 @@ body {
   height: auto;
 }
 
-.active-modal {
-  overflow-y: hidden;
-}
-
 .btn-modal {
   padding: 10px 20px;
   display: block;
@@ -201,7 +197,7 @@ body {
   border-radius: 3px;
   max-width: 80vw;
   max-height: 90vh;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .close-modal {
