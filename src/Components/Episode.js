@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 
 const Episodes = (props) => {
   let [info, setInfo] = useState([]);
-  let {name } = info;
-  console.log(props.idNum)
-  
+  let {name } = info;  
   let [id]= useState(props.idNum)
 
   let api = `https://rickandmortyapi.com/api/episode/${id}`;
@@ -16,9 +14,9 @@ const Episodes = (props) => {
   }, [api]);
 
   return (
-    <div> 
-      <span className="card--name"><b>{name === "" ? "Unknown" : name},  </b></span>
-    </div>
+    <> 
+      <span className="episode--name">Episode:{id}-<b> {name === "" ? "Unknown" : name}</b></span>
+    </>
   );
 };
 
