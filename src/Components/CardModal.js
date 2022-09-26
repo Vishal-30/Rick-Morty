@@ -25,14 +25,12 @@ const CardModal = (props) => {
             <div className="card--name">
               <span>Status:</span>{status}</div>
             <div className="card--name">
-              <span>Location:</span>{location.name}</div>
-            <div className="card--name">
-              <span>Episodes appeared:</span>
-              {episode.map(e => `${e.substring(e.lastIndexOf('/') + 1)} | `)} 
-            </div>
-            <div className="card--name">
-            <span>Episodes:</span>
-            {episode.map(e => `${e.substring(e.lastIndexOf('/') + 1)}|`).map(x => <Episodes idNum={x.slice(0,-1)} />)}
+            <span>Location:</span>{location.name}</div>
+          
+            <div className="card--episodes">
+            <span>Episodes Appeared:</span>
+
+            {episode.map(e => `${e.substring(e.lastIndexOf('/') + 1)}|`).map((x, index) => <Episodes key={index} idNum={x.slice(0, -1)} />)}
 
             </div>
             <button className="close-modal" onClick={toggleButton}>
