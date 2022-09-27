@@ -8,15 +8,13 @@ import Favourites from "./Favourites";
 import "./App.css"
 
 function App() {
-  const [favourite] = useState(false)
-
   return (
     <Router>
       <div className="App">
       <Navbar />
       </div>
       <Routes>
-        <Route path="/" element={<Home />} favourite={favourite} />
+        <Route path="/" element={<Home />} />
         <Route path="/favourites" element={<Favourites favArray={favArray} />} />
       </Routes>
     </Router>
