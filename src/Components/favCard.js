@@ -3,7 +3,7 @@ import favstar from "../Images/fav.webp"
 import emptystar from "../Images/star.jpg"
 
 const FavCard = (props) => {
-  const [favourite, setFavourite] = useState(props.card.favourite)
+  const [favourite, setFavourite] = useState(false)
   const starIcon = props.card.favourite ? favstar : emptystar
 
   const toggleFavourite = () =>{
