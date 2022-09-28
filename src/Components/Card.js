@@ -20,7 +20,7 @@ export default function Card(props) {
       let { image, name } = card; 
       let newCard = {
         ...card,
-        favourite: props.favourite
+        favourite: false
       }
 
 
@@ -33,7 +33,7 @@ export default function Card(props) {
               <div className="card--name card--center">{name}</div>
            </div>
           </div>
-          <FavCard fav={props.favourite} card={newCard} favArray={props.favArray} />
+          <FavCard card={newCard} favArray={props.favArray} />
         </div>
     
       );
