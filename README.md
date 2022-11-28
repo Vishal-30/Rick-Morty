@@ -1,4 +1,35 @@
+# Rick & Morty Characters
 
-![Rick_Morty](https://user-images.githubusercontent.com/78237401/192350168-ceb115ca-fe49-45e4-88ab-8c3a54901f65.png)
+Simple React frontend project built around the Rick and Morty API.
 
-Rick & Morty Characters
+This app was created as an early frontend practice project and focuses on core React concepts:
+
+- fetching and rendering API data
+- search by character name
+- pagination
+- modal-based detail views
+- simple favourites flow
+- component-based UI structure
+
+## Tech
+
+- React
+- React Router
+- CSS
+- Rick and Morty API
+
+## Project Notes
+
+The codebase is intentionally simple and beginner-friendly. It is a small frontend-only app with no backend or database, designed to practice React hooks, component composition, routing, and basic state management.
+
+## Available Scripts
+
+In the project directory, you can run:
+
+### `npm start`
+
+Runs the app in development mode.
+
+### `npm run build`
+
+Builds the app for production.
