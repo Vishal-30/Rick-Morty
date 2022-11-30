@@ -1,30 +1,31 @@
-import React,{useState} from 'react'
-import favstar from "../Images/fav.webp"
-import emptystar from "../Images/star.jpg"
+import React from "react";
+import favstar from "../Images/fav.webp";
+import emptystar from "../Images/star.jpg";
 
 const FavCard = (props) => {
-  const [favourite, setFavourite] = useState(false)
-  const starIcon = props.card.favourite ? favstar : emptystar
+  const starIcon = props.card.favourite ? favstar : emptystar;
 
-  const toggleFavourite = () =>{
-    setFavourite(!favourite)
-    props.card["favourite"] = !props.card["favourite"]
-    if (props.card["favourite"] === true) {
+  const toggleFavourite = () => {
+    if (!props.setFavArray) {
+      return;
+    }
+
+    if (props.card.favourite) {
+      props.setFavArray(props.favArray.filter((item) => item.id !== props.card.id));
+    } else {
       let updatedCard = {
         ...props.card,
-        favourite: true
-      }
-      props.favArray.push(updatedCard)
-    } else {
-       props.favArray.filter(e => e !== (props.card))
+        favourite: true,
+      };
+      props.setFavArray([...props.favArray, updatedCard]);
     }
-  }
+  };
 
   return (
     <div>
       <img src={starIcon} alt="star" onClick={toggleFavourite} className="star" />
     </div>
-  )
-}
+  );
+};
 
-export default FavCard
+export default FavCard;

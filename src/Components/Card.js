@@ -3,39 +3,34 @@ import CardModal from "./CardModal";
 import FavCard from "./favCard";
 
 export default function Card(props) {
-
   const [modalInfo, setModalInfo] = useState({});
   const [modal, setModal] = useState(false);
 
-
   const toggleModal = (modalInfo) => {
     setModal(!modal);
-    setModalInfo(modalInfo)
+    setModalInfo(modalInfo);
   };
 
   let display;
   if (props.results) {
     display = props.results.map((card, index) => {
-
       let { image, name } = card; 
+      const isFavourite = props.favArray?.some((fav) => fav.id === card.id);
       let newCard = {
         ...card,
-        favourite: false
-      }
+        favourite: isFavourite,
+      };
 
-
-      return ( 
-        
-       <div key={index}  className="card">
+      return (
+        <div key={index} className="card">
           <div>
             <img className="card--image" onClick={() => toggleModal(card)} src={image} alt="" />
             <div>
               <div className="card--name card--center">{name}</div>
-           </div>
+            </div>
           </div>
-          <FavCard card={newCard} favArray={props.favArray} />
+          <FavCard card={newCard} favArray={props.favArray} setFavArray={props.setFavArray} />
         </div>
-    
       );
     });
   } else {
@@ -46,6 +41,7 @@ export default function Card(props) {
     <>
       {display}
       {modal && <CardModal card={modalInfo} results={props.results} />}
-    </>);
-};
+    </>
+  );
+}
 

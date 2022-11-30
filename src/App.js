@@ -5,26 +5,28 @@ import Navbar from "./Components/Navbar";
 import Pagination from "./Components/Pagination";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Favourites from "./Favourites";
-import "./App.css"
+import "./App.css";
 
 function App() {
+  const [favArray, setFavArray] = useState([]);
+
   return (
     <Router>
       <div className="App">
-      <Navbar />
+        <Navbar />
       </div>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/favourites" element={<Favourites favArray={favArray} />} />
+        <Route
+          path="/"
+          element={<Home favArray={favArray} setFavArray={setFavArray} />}
+        />
+        <Route path="/favourites" element={<Favourites favArray={favArray} setFavArray={setFavArray} />} />
       </Routes>
     </Router>
   );
 }
 
-const favArray = []
-
-
-const Home = () => {
+const Home = ({ favArray, setFavArray }) => {
   let [pageNumber, updatePageNumber] = useState(1);
   let [fetchedData, updateFetchedData] = useState([]);
   let [search, setSearch] = useState("");
@@ -43,7 +45,7 @@ const Home = () => {
       <h1 className="App-header">Rick & Morty Characters</h1>
       <Search setSearch={setSearch} updatePageNumber={updatePageNumber} />
       <div className="App--container">
-        <Card favArray={favArray} results={results} />
+        <Card favArray={favArray} setFavArray={setFavArray} results={results} />
       </div>
       <Pagination
         info={info}
