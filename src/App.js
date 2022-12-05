@@ -30,28 +30,50 @@ const Home = ({ favArray, setFavArray }) => {
   let [pageNumber, updatePageNumber] = useState(1);
   let [fetchedData, updateFetchedData] = useState([]);
   let [search, setSearch] = useState("");
+  let [loading, setLoading] = useState(true);
+  let [error, setError] = useState("");
   let { info, results } = fetchedData;
 
   let api = `https://rickandmortyapi.com/api/character/?page=${pageNumber}&name=${search}`;
 
   useEffect(() => {
     (async function () {
-      let data = await fetch(api).then((res) => res.json());
-      updateFetchedData(data);
+      setLoading(true);
+      setError("");
+
+      try {
+        let data = await fetch(api).then((res) => res.json());
+        updateFetchedData(data);
+
+        if (data.error) {
+          setError(data.error);
+        }
+      } catch (err) {
+        setError("Something went wrong. Please try again.");
+      } finally {
+        setLoading(false);
+      }
     })();
   }, [api]);
+
   return (
     <div className="App">
       <h1 className="App-header">Rick & Morty Characters</h1>
       <Search setSearch={setSearch} updatePageNumber={updatePageNumber} />
       <div className="App--container">
-        <Card favArray={favArray} setFavArray={setFavArray} results={results} />
+        {loading && <p>Loading characters...</p>}
+        {!loading && error && <p>{error}</p>}
+        {!loading && !error && (
+          <Card favArray={favArray} setFavArray={setFavArray} results={results} />
+        )}
       </div>
-      <Pagination
-        info={info}
-        pageNumber={pageNumber}
-        updatePageNumber={updatePageNumber}
-      />
+      {!error && (
+        <Pagination
+          info={info}
+          pageNumber={pageNumber}
+          updatePageNumber={updatePageNumber}
+        />
+      )}
     </div>
   );
 };

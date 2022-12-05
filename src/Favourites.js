@@ -10,7 +10,11 @@ const Favourites = ({ favArray, setFavArray }) => {
     <div className="App">
       <h1 className="App-header">Favourite Characters</h1>
       <div className="App--container">
-        <Card results={uniqueChars} favArray={favArray} setFavArray={setFavArray} />
+        {uniqueChars.length > 0 ? (
+          <Card results={uniqueChars} favArray={favArray} setFavArray={setFavArray} />
+        ) : (
+          <p>No favourite characters added yet.</p>
+        )}
       </div>
     </div>
   );
