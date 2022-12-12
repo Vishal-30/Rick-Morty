@@ -6,14 +6,18 @@ export default function Card(props) {
   const [modalInfo, setModalInfo] = useState({});
   const [modal, setModal] = useState(false);
 
-  const toggleModal = (modalInfo) => {
-    setModal(!modal);
+  const openModal = (modalInfo) => {
     setModalInfo(modalInfo);
+    setModal(true);
+  };
+
+  const closeModal = () => {
+    setModal(false);
   };
 
   let display;
   if (props.results) {
-    display = props.results.map((card, index) => {
+    display = props.results.map((card) => {
       let { image, name } = card; 
       const isFavourite = props.favArray?.some((fav) => fav.id === card.id);
       let newCard = {
@@ -22,9 +26,9 @@ export default function Card(props) {
       };
 
       return (
-        <div key={index} className="card">
+        <div key={card.id} className="card">
           <div>
-            <img className="card--image" onClick={() => toggleModal(card)} src={image} alt="" />
+            <img className="card--image" onClick={() => openModal(card)} src={image} alt={name} />
             <div>
               <div className="card--name card--center">{name}</div>
             </div>
@@ -40,7 +44,7 @@ export default function Card(props) {
   return (
     <>
       {display}
-      {modal && <CardModal card={modalInfo} results={props.results} />}
+      {modal && <CardModal card={modalInfo} closeModal={closeModal} />}
     </>
   );
 }

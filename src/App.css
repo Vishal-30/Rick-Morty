@@ -1,6 +1,7 @@
 body {
   overflow-x: hidden;
-  font-family: 'Inter', sans-serif;
+  font-family: "Poppins", sans-serif;
+  background-color: #fff9f0;
 }
 
 .navbar {
@@ -26,7 +27,7 @@ body {
   padding-top: 0.3125rem;
   padding-bottom: 0.3125rem;
   margin-right: 1rem;
-  font-size: 1.25rem !important;
+  font-size: 1.3rem !important;
   font-weight: bold;
   background-color: #cccccc;
   line-height: inherit;
@@ -109,14 +110,15 @@ body {
   margin-block: 5px;
   justify-content: center;
   border: 1px solid #222;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
+  background-color: #fff;
 }
 
 .card--image {
   max-width: 100%;
   height: auto;
-  border-radius: 5px 5px 0 0;
+  border-radius: 8px 8px 0 0;
 
 }
 
@@ -193,11 +195,18 @@ body {
   transform: translate(-50%, -50%);
   line-height: 1.4;
   background: #f1f1f1;
-  padding: 14px 28px;
-  border-radius: 3px;
+  padding: 18px 28px;
+  border-radius: 10px;
   max-width: 80vw;
   max-height: 90vh;
   overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+}
+
+.modal-image {
+  display: block;
+  margin-inline: auto;
+  margin-bottom: 1rem;
 }
 
 .close-modal {
@@ -206,6 +215,9 @@ body {
   right: 10px;
   padding: 5px 7px;
   cursor: pointer;
+  border: 1px solid #000;
+  border-radius: 4px;
+  background-color: #fff;
 }
 
 ul.pagination {
