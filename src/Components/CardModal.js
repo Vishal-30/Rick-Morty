@@ -24,29 +24,35 @@ const CardModal = (props) => {
     <div className="modal">
       <div onClick={props.closeModal} className="overlay"></div>
       <div className="modal-content">
-        <img className="card--image modal-image" src={image} alt={name} />
-        <div className="card--name">
-          <span>Id:</span>{id}
-        </div>
-        <div className="card--name">
-          <span>Name:</span>{name}
-        </div>
-        <div className="card--name">
-          <span>Gender:</span>{gender}
-        </div>
-        <div className="card--name">
-          <span>Status:</span>{status}
-        </div>
-        <div className="card--name">
-          <span>Location:</span>{location.name}
-        </div>
+        <div className="modal-layout">
+          <div className="modal-left">
+            <img className="card--image modal-image" src={image} alt={name} />
+          </div>
+          <div className="modal-right">
+            <div className="card--name">
+              <span>Id:</span>{id}
+            </div>
+            <div className="card--name">
+              <span>Name:</span>{name}
+            </div>
+            <div className="card--name">
+              <span>Gender:</span>{gender}
+            </div>
+            <div className="card--name">
+              <span>Status:</span>{status}
+            </div>
+            <div className="card--name">
+              <span>Location:</span>{location.name}
+            </div>
 
-        <div className="card--episodes">
-          <span>Episodes Appeared:</span>
+            <div className="card--episodes">
+              <span>Episodes Appeared:</span>
 
-          {episode.map((e, index) => (
-            <Episodes key={index} idNum={e.substring(e.lastIndexOf("/") + 1)} />
-          ))}
+              {episode.map((e, index) => (
+                <Episodes key={index} idNum={e.substring(e.lastIndexOf("/") + 1)} />
+              ))}
+            </div>
+          </div>
         </div>
         <button className="close-modal" onClick={props.closeModal}>
           X
