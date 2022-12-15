@@ -66,13 +66,15 @@ body {
   gap: 1rem;
   align-items: center;
   padding-bottom: 1rem;
+  flex-wrap: wrap;
 }
 
 .search-input {
   font-size: 1rem;
   border: 1px solid #000;
-  padding: 0.25rem;
+  padding: 0.6rem 0.75rem;
   width: 30vw;
+  border-radius: 6px;
 
 }
 
@@ -80,7 +82,14 @@ body {
   font-size: 1rem;
   font-weight: bold;
   border: 1px solid #000;
-  padding: 0.25rem;
+  padding: 0.6rem 0.9rem;
+  border-radius: 6px;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.search-btn-clear {
+  background-color: #f7e2b6;
 }
 
 .App {
@@ -130,11 +139,26 @@ body {
   flex-wrap: wrap;
 }
 
-.episode--name {
-  font-size: 1rem;
+.episode--item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.episode--code {
+  min-width: 70px;
+  font-size: 0.9rem;
   font-weight: bold;
-  margin-bottom: 0.5rem;
-  display: inline- block;
+  color: #c06a00;
+}
+
+.episode--name {
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-bottom: 0;
+  display: inline-block;
 }
 
 .card--episodes {
@@ -144,6 +168,7 @@ body {
   flex-direction: column;
   text-align: left;
   flex-wrap: wrap;
+  gap: 0.25rem;
 }
 
 .card--center {
@@ -271,8 +296,23 @@ ul.pagination {
   width: 60vw;
   margin: auto;
   margin-block: 1.5rem;
+  padding-left: 0;
 }
 
-.page-item button {
+.page-link {
   cursor: pointer;
+  border: 1px solid #000;
+  background-color: #fff;
+  border-radius: 6px;
+  padding: 0.5rem 0.8rem;
+  font-weight: 600;
+}
+
+.page-link:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.active-page {
+  background-color: #ffcf70;
 }

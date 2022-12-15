@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 
 const Episodes = (props) => {
   let [info, setInfo] = useState([]);
-  let {name } = info;  
-  let [id]= useState(props.idNum)
+  let { name, episode } = info;
+  let [id] = useState(props.idNum);
 
   let api = `https://rickandmortyapi.com/api/episode/${id}`;
   useEffect(() => {
@@ -14,9 +14,10 @@ const Episodes = (props) => {
   }, [api]);
 
   return (
-    <> 
-      <span className="episode--name">Episode:{id}-<b> {name === "" ? "Unknown" : name}</b></span>
-    </>
+    <div className="episode--item">
+      <span className="episode--code">{episode || `Episode ${id}`}</span>
+      <span className="episode--name">{name || "Unknown"}</span>
+    </div>
   );
 };
 
