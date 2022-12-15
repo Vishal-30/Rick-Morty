@@ -16,6 +16,7 @@ const Episodes = (props) => {
   return (
     <div className="episode--item">
       <span className="episode--code">{episode || `Episode ${id}`}</span>
+      <span className="episode--separator">-</span>
       <span className="episode--name">{name || "Unknown"}</span>
     </div>
   );
