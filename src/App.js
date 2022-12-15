@@ -8,7 +8,19 @@ import Favourites from "./Favourites";
 import "./App.css";
 
 function App() {
-  const [favArray, setFavArray] = useState([]);
+  const [favArray, setFavArray] = useState(() => {
+    const savedFavourites = localStorage.getItem("favourites");
+
+    if (savedFavourites) {
+      return JSON.parse(savedFavourites);
+    }
+
+    return [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("favourites", JSON.stringify(favArray));
+  }, [favArray]);
 
   return (
     <Router>
