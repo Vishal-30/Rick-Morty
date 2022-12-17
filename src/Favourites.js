@@ -9,6 +9,11 @@ const Favourites = ({ favArray, setFavArray }) => {
   return (
     <div className="App">
       <h1 className="App-header">Favourite Characters</h1>
+      {uniqueChars.length > 0 && (
+        <button className="clear-favourites-btn" onClick={() => setFavArray([])}>
+          Clear All Favourites
+        </button>
+      )}
       <div className="App--container">
         {uniqueChars.length > 0 ? (
           <Card results={uniqueChars} favArray={favArray} setFavArray={setFavArray} />

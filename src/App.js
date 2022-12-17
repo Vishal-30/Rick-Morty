@@ -25,7 +25,7 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <Navbar />
+        <Navbar favCount={favArray.length} />
       </div>
       <Routes>
         <Route
@@ -42,11 +42,13 @@ const Home = ({ favArray, setFavArray }) => {
   let [pageNumber, updatePageNumber] = useState(1);
   let [fetchedData, updateFetchedData] = useState([]);
   let [search, setSearch] = useState("");
+  let [status, setStatus] = useState("");
+  let [gender, setGender] = useState("");
   let [loading, setLoading] = useState(true);
   let [error, setError] = useState("");
   let { info, results } = fetchedData;
 
-  let api = `https://rickandmortyapi.com/api/character/?page=${pageNumber}&name=${search}`;
+  let api = `https://rickandmortyapi.com/api/character/?page=${pageNumber}&name=${search}&status=${status}&gender=${gender}`;
 
   useEffect(() => {
     (async function () {
@@ -72,6 +74,36 @@ const Home = ({ favArray, setFavArray }) => {
     <div className="App">
       <h1 className="App-header">Rick & Morty Characters</h1>
       <Search setSearch={setSearch} updatePageNumber={updatePageNumber} />
+      <div className="filter-bar">
+        <select
+          className="filter-select"
+          value={status}
+          onChange={(e) => {
+            setStatus(e.target.value);
+            updatePageNumber(1);
+          }}
+        >
+          <option value="">All Status</option>
+          <option value="alive">Alive</option>
+          <option value="dead">Dead</option>
+          <option value="unknown">Unknown</option>
+        </select>
+
+        <select
+          className="filter-select"
+          value={gender}
+          onChange={(e) => {
+            setGender(e.target.value);
+            updatePageNumber(1);
+          }}
+        >
+          <option value="">All Gender</option>
+          <option value="female">Female</option>
+          <option value="male">Male</option>
+          <option value="genderless">Genderless</option>
+          <option value="unknown">Unknown</option>
+        </select>
+      </div>
       <div className="App--container">
         {loading && <p>Loading characters...</p>}
         {!loading && error && <p>{error}</p>}
