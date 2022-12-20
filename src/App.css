@@ -119,6 +119,11 @@ body {
   margin-bottom: 1rem;
 }
 
+.results-count {
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
 .App--container {
   width: 100vw;
   display: flex;
@@ -156,6 +161,30 @@ body {
   margin-bottom: 0.5rem;
   display: flex;
   flex-wrap: wrap;
+}
+
+.status-badge {
+  display: inline-block;
+  margin: 0.75rem auto 0.5rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.badge-alive {
+  background-color: #d8f3dc;
+  color: #1b5e20;
+}
+
+.badge-dead {
+  background-color: #ffd6d6;
+  color: #9b2226;
+}
+
+.badge-unknown {
+  background-color: #e9ecef;
+  color: #495057;
 }
 
 .episode--item {

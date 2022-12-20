@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import Episodes from "./Episode";
 
 const CardModal = (props) => {
-  let { id, image, name, status, gender, location, episode } = props.card;
+  let { id, image, name, status, gender, location, origin, species, episode } = props.card;
 
   useEffect(() => {
     const closeOnEscape = (event) => {
@@ -40,6 +40,12 @@ const CardModal = (props) => {
             </div>
             <div className="card--name">
               <span>Status:</span>{status}
+            </div>
+            <div className="card--name">
+              <span>Species:</span>{species}
+            </div>
+            <div className="card--name">
+              <span>Origin:</span>{origin.name}
             </div>
             <div className="card--name">
               <span>Location:</span>{location.name}

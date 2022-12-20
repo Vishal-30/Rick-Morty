@@ -104,6 +104,9 @@ const Home = ({ favArray, setFavArray }) => {
           <option value="unknown">Unknown</option>
         </select>
       </div>
+      {!loading && !error && results && (
+        <p className="results-count">Showing {results.length} characters</p>
+      )}
       <div className="App--container">
         {loading && <p>Loading characters...</p>}
         {!loading && error && <p>{error}</p>}

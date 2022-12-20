@@ -18,18 +18,25 @@ export default function Card(props) {
   let display;
   if (props.results) {
     display = props.results.map((card) => {
-      let { image, name } = card; 
+      let { image, name, status } = card; 
       const isFavourite = props.favArray?.some((fav) => fav.id === card.id);
       let newCard = {
         ...card,
         favourite: isFavourite,
       };
+      const statusClass =
+        status === "Alive"
+          ? "badge-alive"
+          : status === "Dead"
+          ? "badge-dead"
+          : "badge-unknown";
 
       return (
         <div key={card.id} className="card">
           <div>
             <img className="card--image" onClick={() => openModal(card)} src={image} alt={name} />
             <div>
+              <div className={`status-badge ${statusClass}`}>{status}</div>
               <div className="card--name card--center">{name}</div>
             </div>
           </div>
