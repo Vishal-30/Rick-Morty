@@ -99,6 +99,7 @@ body {
   gap: 1rem;
   flex-wrap: wrap;
   margin-bottom: 1rem;
+  align-items: center;
 }
 
 .filter-select {
@@ -329,6 +330,12 @@ body {
   background-color: #f7e2b6;
   cursor: pointer;
   margin-bottom: 1rem;
+}
+
+.clear-favourites-btn:hover,
+.search-btn:hover,
+.filter-select:hover {
+  opacity: 0.95;
 }
 
 @media (max-width: 768px) {

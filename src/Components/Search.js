@@ -1,12 +1,23 @@
 import React, { useEffect, useState } from "react";
 
-const Search = ({ setSearch, updatePageNumber }) => {
-  const [query, setQuery] = useState("");
+const Search = ({
+  search,
+  setSearch,
+  updatePageNumber,
+  placeholder = "Search for characters",
+}) => {
+  const [query, setQuery] = useState(search || "");
+
+  useEffect(() => {
+    setQuery(search || "");
+  }, [search]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      updatePageNumber(1);
       setSearch(query);
+      if (updatePageNumber) {
+        updatePageNumber(1);
+      }
     }, 400);
 
     return () => clearTimeout(timer);
@@ -17,8 +28,9 @@ const Search = ({ setSearch, updatePageNumber }) => {
   };
 
   const clearSearch = () => {
-    setQuery("");
-    updatePageNumber(1);
+    if (updatePageNumber) {
+      updatePageNumber(1);
+    }
     setSearch("");
   };
 
@@ -29,7 +41,7 @@ const Search = ({ setSearch, updatePageNumber }) => {
         onChange={(e) => {
           setQuery(e.target.value);
         }}
-        placeholder="Search for characters"
+        placeholder={placeholder}
         type="text"
         className="search-input"
       />

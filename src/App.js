@@ -44,6 +44,7 @@ const Home = ({ favArray, setFavArray }) => {
   let [search, setSearch] = useState("");
   let [status, setStatus] = useState("");
   let [gender, setGender] = useState("");
+  let [sort, setSort] = useState("");
   let [loading, setLoading] = useState(true);
   let [error, setError] = useState("");
   let { info, results } = fetchedData;
@@ -70,10 +71,28 @@ const Home = ({ favArray, setFavArray }) => {
     })();
   }, [api]);
 
+  let sortedResults = results ? [...results] : [];
+
+  if (sort === "name-asc") {
+    sortedResults.sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  if (sort === "name-desc") {
+    sortedResults.sort((a, b) => b.name.localeCompare(a.name));
+  }
+
+  const clearFilters = () => {
+    setStatus("");
+    setGender("");
+    setSort("");
+    setSearch("");
+    updatePageNumber(1);
+  };
+
   return (
     <div className="App">
       <h1 className="App-header">Rick & Morty Characters</h1>
-      <Search setSearch={setSearch} updatePageNumber={updatePageNumber} />
+      <Search search={search} setSearch={setSearch} updatePageNumber={updatePageNumber} />
       <div className="filter-bar">
         <select
           className="filter-select"
@@ -103,15 +122,31 @@ const Home = ({ favArray, setFavArray }) => {
           <option value="genderless">Genderless</option>
           <option value="unknown">Unknown</option>
         </select>
+
+        <select
+          className="filter-select"
+          value={sort}
+          onChange={(e) => {
+            setSort(e.target.value);
+          }}
+        >
+          <option value="">Sort Characters</option>
+          <option value="name-asc">Name A-Z</option>
+          <option value="name-desc">Name Z-A</option>
+        </select>
+
+        <button className="search-btn search-btn-clear" onClick={clearFilters}>
+          Clear Filters
+        </button>
       </div>
-      {!loading && !error && results && (
-        <p className="results-count">Showing {results.length} characters</p>
+      {!loading && !error && sortedResults && (
+        <p className="results-count">Showing {sortedResults.length} characters</p>
       )}
       <div className="App--container">
         {loading && <p>Loading characters...</p>}
         {!loading && error && <p>{error}</p>}
         {!loading && !error && (
-          <Card favArray={favArray} setFavArray={setFavArray} results={results} />
+          <Card favArray={favArray} setFavArray={setFavArray} results={sortedResults} />
         )}
       </div>
       {!error && (
