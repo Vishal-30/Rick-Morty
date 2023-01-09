@@ -3,6 +3,8 @@ import Search from "./Components/Search";
 import Card from "./Components/Card";
 import Navbar from "./Components/Navbar";
 import Pagination from "./Components/Pagination";
+import SkeletonCards from "./Components/SkeletonCards";
+import Footer from "./Components/Footer";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Favourites from "./Favourites";
 import "./App.css";
@@ -34,6 +36,7 @@ function App() {
         />
         <Route path="/favourites" element={<Favourites favArray={favArray} setFavArray={setFavArray} />} />
       </Routes>
+      <Footer />
     </Router>
   );
 }
@@ -241,7 +244,7 @@ const Home = ({ favArray, setFavArray }) => {
         <p className="results-count">Showing {currentInfo.count} characters</p>
       )}
       <div className="App--container">
-        {loading && <p>Loading characters...</p>}
+        {loading && <SkeletonCards />}
         {!loading && error && <p>{error}</p>}
         {!loading && !error && (
           <Card favArray={favArray} setFavArray={setFavArray} results={displayedResults} />
