@@ -67,12 +67,13 @@ const Home = ({ favArray, setFavArray }) => {
 
   const fetchJson = async (url) => {
     let response = await fetch(url);
+    let data = await response.json();
 
     if (!response.ok) {
-      throw new Error("Request failed");
+      return data;
     }
 
-    return response.json();
+    return data;
   };
 
   useEffect(() => {
@@ -113,6 +114,13 @@ const Home = ({ favArray, setFavArray }) => {
       try {
         let firstPageUrl = `${baseApi}${params.toString() ? "&" : ""}page=1`;
         let firstPageData = await fetchJson(firstPageUrl);
+
+        if (firstPageData.error) {
+          updateFetchedData(firstPageData);
+          setAllCharacters([]);
+          setError(firstPageData.error);
+          return;
+        }
 
         let allResults = firstPageData.results ? [...firstPageData.results] : [];
 
