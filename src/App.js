@@ -39,8 +39,10 @@ function App() {
 }
 
 const Home = ({ favArray, setFavArray }) => {
+  const charactersPerPage = 20;
   let [pageNumber, updatePageNumber] = useState(1);
   let [fetchedData, updateFetchedData] = useState([]);
+  let [allCharacters, setAllCharacters] = useState([]);
   let [search, setSearch] = useState("");
   let [status, setStatus] = useState("");
   let [gender, setGender] = useState("");
@@ -49,15 +51,42 @@ const Home = ({ favArray, setFavArray }) => {
   let [error, setError] = useState("");
   let { info, results } = fetchedData;
 
-  let api = `https://rickandmortyapi.com/api/character/?page=${pageNumber}&name=${search}&status=${status}&gender=${gender}`;
+  const params = new URLSearchParams();
+  if (search) {
+    params.set("name", search);
+  }
+  if (status) {
+    params.set("status", status);
+  }
+  if (gender) {
+    params.set("gender", gender);
+  }
+
+  let baseApi = `https://rickandmortyapi.com/api/character/?${params.toString()}`;
+  let api = `${baseApi}${params.toString() ? "&" : ""}page=${pageNumber}`;
+
+  const fetchJson = async (url) => {
+    let response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error("Request failed");
+    }
+
+    return response.json();
+  };
 
   useEffect(() => {
     (async function () {
+      if (sort) {
+        return;
+      }
+
       setLoading(true);
       setError("");
 
       try {
-        let data = await fetch(api).then((res) => res.json());
+        let data = await fetchJson(api);
+        setAllCharacters([]);
         updateFetchedData(data);
 
         if (data.error) {
@@ -65,20 +94,80 @@ const Home = ({ favArray, setFavArray }) => {
         }
       } catch (err) {
         setError("Something went wrong. Please try again.");
+        updateFetchedData([]);
       } finally {
         setLoading(false);
       }
     })();
-  }, [api]);
+  }, [api, sort]);
 
-  let sortedResults = results ? [...results] : [];
+  useEffect(() => {
+    (async function () {
+      if (!sort) {
+        return;
+      }
 
-  if (sort === "name-asc") {
-    sortedResults.sort((a, b) => a.name.localeCompare(b.name));
-  }
+      setLoading(true);
+      setError("");
 
-  if (sort === "name-desc") {
-    sortedResults.sort((a, b) => b.name.localeCompare(a.name));
+      try {
+        let firstPageUrl = `${baseApi}${params.toString() ? "&" : ""}page=1`;
+        let firstPageData = await fetchJson(firstPageUrl);
+
+        let allResults = firstPageData.results ? [...firstPageData.results] : [];
+
+        if (firstPageData.info?.pages > 1) {
+          const remainingRequests = [];
+
+          for (let i = 2; i <= firstPageData.info.pages; i++) {
+            remainingRequests.push(
+              fetchJson(`${baseApi}${params.toString() ? "&" : ""}page=${i}`)
+            );
+          }
+
+          const remainingPages = await Promise.all(remainingRequests);
+
+          remainingPages.forEach((page) => {
+            allResults = [...allResults, ...page.results];
+          });
+        }
+
+        setAllCharacters(allResults);
+      } catch (err) {
+        setError("Something went wrong. Please try again.");
+        setAllCharacters([]);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [baseApi, sort]);
+
+  useEffect(() => {
+    updatePageNumber(1);
+  }, [search, status, gender, sort]);
+
+  let displayedResults = results ? [...results] : [];
+  let currentInfo = info;
+
+  if (sort && allCharacters.length > 0) {
+    let sortedCharacters = [...allCharacters];
+
+    if (sort === "name-asc") {
+      sortedCharacters.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    if (sort === "name-desc") {
+      sortedCharacters.sort((a, b) => b.name.localeCompare(a.name));
+    }
+
+    let startIndex = (pageNumber - 1) * charactersPerPage;
+    let endIndex = startIndex + charactersPerPage;
+
+    displayedResults = sortedCharacters.slice(startIndex, endIndex);
+    currentInfo = {
+      count: sortedCharacters.length,
+      pages: Math.ceil(sortedCharacters.length / charactersPerPage),
+    };
   }
 
   const clearFilters = () => {
@@ -128,6 +217,7 @@ const Home = ({ favArray, setFavArray }) => {
           value={sort}
           onChange={(e) => {
             setSort(e.target.value);
+            updatePageNumber(1);
           }}
         >
           <option value="">Sort Characters</option>
@@ -139,19 +229,19 @@ const Home = ({ favArray, setFavArray }) => {
           Clear Filters
         </button>
       </div>
-      {!loading && !error && sortedResults && (
-        <p className="results-count">Showing {sortedResults.length} characters</p>
+      {!loading && !error && currentInfo && (
+        <p className="results-count">Showing {currentInfo.count} characters</p>
       )}
       <div className="App--container">
         {loading && <p>Loading characters...</p>}
         {!loading && error && <p>{error}</p>}
         {!loading && !error && (
-          <Card favArray={favArray} setFavArray={setFavArray} results={sortedResults} />
+          <Card favArray={favArray} setFavArray={setFavArray} results={displayedResults} />
         )}
       </div>
-      {!error && (
+      {!error && currentInfo && (
         <Pagination
-          info={info}
+          info={currentInfo}
           pageNumber={pageNumber}
           updatePageNumber={updatePageNumber}
         />
