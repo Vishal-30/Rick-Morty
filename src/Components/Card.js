@@ -32,15 +32,17 @@ export default function Card(props) {
           : "badge-unknown";
 
       return (
-        <div key={card.id} className="card">
-          <div>
-            <img className="card--image" onClick={() => openModal(card)} src={image} alt={name} />
-            <div>
+        <div key={card.id} className="col-12 col-sm-6 col-lg-4 col-xl-3 d-flex">
+          <div className="card character-card w-100">
+            <div className="card-inner">
+              <img className="card--image" onClick={() => openModal(card)} src={image} alt={name} />
+              <div className="card-content">
               <div className={`status-badge ${statusClass}`}>{status}</div>
               <div className="card--name card--center">{name}</div>
+              </div>
             </div>
+            <FavCard card={newCard} favArray={props.favArray} setFavArray={props.setFavArray} />
           </div>
-          <FavCard card={newCard} favArray={props.favArray} setFavArray={props.setFavArray} />
         </div>
       );
     });

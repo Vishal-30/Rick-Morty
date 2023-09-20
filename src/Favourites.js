@@ -24,6 +24,7 @@ const Favourites = ({ favArray, setFavArray }) => {
 
   return (
     <div className="App">
+      <div className="container py-4">
       <h1 className="App-header">Favourite Characters</h1>
       <Search
         search={search}
@@ -49,12 +50,15 @@ const Favourites = ({ favArray, setFavArray }) => {
           Clear All Favourites
         </button>
       )}
-      <div className="App--container">
+      <div className="row g-4 justify-content-center App--container">
         {filteredChars.length > 0 ? (
           <Card results={filteredChars} favArray={favArray} setFavArray={setFavArray} />
         ) : (
-          <p>{uniqueChars.length > 0 ? "No favourite characters found." : "No favourite characters added yet."}</p>
+          <div className="col-12">
+            <p>{uniqueChars.length > 0 ? "No favourite characters found." : "No favourite characters added yet."}</p>
+          </div>
         )}
+      </div>
       </div>
     </div>
   );

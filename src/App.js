@@ -191,6 +191,7 @@ const Home = ({ favArray, setFavArray }) => {
 
   return (
     <div className="App">
+      <div className="container py-4">
       <h1 className="App-header">Rick & Morty Characters</h1>
       <Search search={search} setSearch={setSearch} updatePageNumber={updatePageNumber} />
       <div className="filter-bar">
@@ -243,9 +244,9 @@ const Home = ({ favArray, setFavArray }) => {
       {!loading && !error && currentInfo && (
         <p className="results-count">Showing {currentInfo.count} characters</p>
       )}
-      <div className="App--container">
+      <div className="row g-4 justify-content-center App--container">
         {loading && <SkeletonCards />}
-        {!loading && error && <p>{error}</p>}
+        {!loading && error && <div className="col-12"><p>{error}</p></div>}
         {!loading && !error && (
           <Card favArray={favArray} setFavArray={setFavArray} results={displayedResults} />
         )}
@@ -257,6 +258,7 @@ const Home = ({ favArray, setFavArray }) => {
           updatePageNumber={updatePageNumber}
         />
       )}
+      </div>
     </div>
   );
 };

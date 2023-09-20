@@ -6,10 +6,12 @@ const SkeletonCards = () => {
   return (
     <>
       {skeletonArray.map((_, index) => (
-        <div key={index} className="card skeleton-card">
-          <div className="skeleton-image"></div>
-          <div className="skeleton-badge"></div>
-          <div className="skeleton-name"></div>
+        <div key={index} className="col-12 col-sm-6 col-lg-4 col-xl-3 d-flex">
+          <div className="card skeleton-card w-100">
+            <div className="skeleton-image"></div>
+            <div className="skeleton-badge"></div>
+            <div className="skeleton-name"></div>
+          </div>
         </div>
       ))}
     </>
