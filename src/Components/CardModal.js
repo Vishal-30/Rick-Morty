@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { Link } from "react-router-dom";
 import Episodes from "./Episode";
 
 const CardModal = (props) => {
@@ -58,6 +59,9 @@ const CardModal = (props) => {
                 <Episodes key={index} idNum={e.substring(e.lastIndexOf("/") + 1)} />
               ))}
             </div>
+            <Link to={`/character/${id}`} className="details-link-btn" onClick={props.closeModal}>
+              Open Full Details
+            </Link>
           </div>
         </div>
         <button className="close-modal" onClick={props.closeModal}>

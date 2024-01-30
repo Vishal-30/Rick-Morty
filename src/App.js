@@ -5,6 +5,7 @@ import Navbar from "./Components/Navbar";
 import Pagination from "./Components/Pagination";
 import SkeletonCards from "./Components/SkeletonCards";
 import Footer from "./Components/Footer";
+import CharacterDetails from "./Components/CharacterDetails";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Favourites from "./Favourites";
 import "./App.css";
@@ -34,6 +35,7 @@ function App() {
           path="/"
           element={<Home favArray={favArray} setFavArray={setFavArray} />}
         />
+        <Route path="/character/:id" element={<CharacterDetails />} />
         <Route path="/favourites" element={<Favourites favArray={favArray} setFavArray={setFavArray} />} />
       </Routes>
       <Footer />
@@ -49,6 +51,8 @@ const Home = ({ favArray, setFavArray }) => {
   let [search, setSearch] = useState("");
   let [status, setStatus] = useState("");
   let [gender, setGender] = useState("");
+  let [species, setSpecies] = useState("");
+  let [origin, setOrigin] = useState("");
   let [sort, setSort] = useState("");
   let [loading, setLoading] = useState(true);
   let [error, setError] = useState("");
@@ -63,6 +67,9 @@ const Home = ({ favArray, setFavArray }) => {
   }
   if (gender) {
     params.set("gender", gender);
+  }
+  if (species) {
+    params.set("species", species);
   }
 
   let baseApi = `https://rickandmortyapi.com/api/character/?${params.toString()}`;
@@ -81,7 +88,7 @@ const Home = ({ favArray, setFavArray }) => {
 
   useEffect(() => {
     (async function () {
-      if (sort) {
+      if (sort || origin) {
         return;
       }
 
@@ -103,11 +110,11 @@ const Home = ({ favArray, setFavArray }) => {
         setLoading(false);
       }
     })();
-  }, [api, sort]);
+  }, [api, sort, origin]);
 
   useEffect(() => {
     (async function () {
-      if (!sort) {
+      if (!sort && !origin) {
         return;
       }
 
@@ -143,6 +150,12 @@ const Home = ({ favArray, setFavArray }) => {
           });
         }
 
+        if (origin) {
+          allResults = allResults.filter((character) =>
+            character.origin.name.toLowerCase().includes(origin.toLowerCase())
+          );
+        }
+
         setAllCharacters(allResults);
       } catch (err) {
         setError("Something went wrong. Please try again.");
@@ -151,16 +164,16 @@ const Home = ({ favArray, setFavArray }) => {
         setLoading(false);
       }
     })();
-  }, [baseApi, sort]);
+  }, [baseApi, sort, origin]);
 
   useEffect(() => {
     updatePageNumber(1);
-  }, [search, status, gender, sort]);
+  }, [search, status, gender, species, origin, sort]);
 
   let displayedResults = results ? [...results] : [];
   let currentInfo = info;
 
-  if (sort && allCharacters.length > 0) {
+  if ((sort || origin) && allCharacters.length >= 0) {
     let sortedCharacters = [...allCharacters];
 
     if (sort === "name-asc") {
@@ -184,6 +197,8 @@ const Home = ({ favArray, setFavArray }) => {
   const clearFilters = () => {
     setStatus("");
     setGender("");
+    setSpecies("");
+    setOrigin("");
     setSort("");
     setSearch("");
     updatePageNumber(1);
@@ -208,6 +223,28 @@ const Home = ({ favArray, setFavArray }) => {
           <option value="dead">Dead</option>
           <option value="unknown">Unknown</option>
         </select>
+
+        <input
+          className="filter-select"
+          type="text"
+          placeholder="Filter by species"
+          value={species}
+          onChange={(e) => {
+            setSpecies(e.target.value);
+            updatePageNumber(1);
+          }}
+        />
+
+        <input
+          className="filter-select"
+          type="text"
+          placeholder="Filter by origin"
+          value={origin}
+          onChange={(e) => {
+            setOrigin(e.target.value);
+            updatePageNumber(1);
+          }}
+        />
 
         <select
           className="filter-select"
