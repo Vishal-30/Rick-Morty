@@ -371,6 +371,39 @@ body {
   margin-bottom: 1rem;
 }
 
+.compare-section {
+  background-color: #fff;
+  border: 1px solid #eadbc1;
+  border-radius: 16px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.compare-title {
+  margin-bottom: 1rem;
+  font-size: 1.4rem;
+}
+
+.compare-card {
+  background-color: #fff9f0;
+  border: 1px solid #eadbc1;
+  border-radius: 14px;
+  padding: 1rem;
+  text-align: left;
+}
+
+.compare-card-title {
+  margin: 1rem 0;
+}
+
+.compare-image {
+  width: 100%;
+  max-width: 260px;
+  margin-inline: auto;
+  display: block;
+  border-radius: 12px;
+}
+
 .skeleton-card {
   min-height: 320px;
   padding-bottom: 1rem;
