@@ -92,6 +92,10 @@ body {
   background-color: #f7e2b6;
 }
 
+.random-btn {
+  background-color: #dff4ff;
+}
+
 .filter-bar {
   display: flex;
   justify-content: center;

@@ -6,7 +6,7 @@ import Pagination from "./Components/Pagination";
 import SkeletonCards from "./Components/SkeletonCards";
 import Footer from "./Components/Footer";
 import CharacterDetails from "./Components/CharacterDetails";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
 import Favourites from "./Favourites";
 import "./App.css";
 
@@ -44,6 +44,7 @@ function App() {
 }
 
 const Home = ({ favArray, setFavArray }) => {
+  const navigate = useNavigate();
   const charactersPerPage = 20;
   let [pageNumber, updatePageNumber] = useState(1);
   let [fetchedData, updateFetchedData] = useState([]);
@@ -204,6 +205,11 @@ const Home = ({ favArray, setFavArray }) => {
     updatePageNumber(1);
   };
 
+  const goToRandomCharacter = () => {
+    const randomId = Math.floor(Math.random() * 826) + 1;
+    navigate(`/character/${randomId}`);
+  };
+
   return (
     <div className="App">
       <div className="container py-4">
@@ -276,6 +282,10 @@ const Home = ({ favArray, setFavArray }) => {
 
         <button className="search-btn search-btn-clear" onClick={clearFilters}>
           Clear Filters
+        </button>
+
+        <button className="search-btn random-btn" onClick={goToRandomCharacter}>
+          Random Character
         </button>
       </div>
       {!loading && !error && currentInfo && (
