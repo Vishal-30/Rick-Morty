@@ -6,6 +6,8 @@ import Pagination from "./Components/Pagination";
 import SkeletonCards from "./Components/SkeletonCards";
 import Footer from "./Components/Footer";
 import CharacterDetails from "./Components/CharacterDetails";
+import BackToTop from "./Components/BackToTop";
+import NotFound from "./Components/NotFound";
 import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
 import Favourites from "./Favourites";
 import "./App.css";
@@ -37,7 +39,9 @@ function App() {
         />
         <Route path="/character/:id" element={<CharacterDetails />} />
         <Route path="/favourites" element={<Favourites favArray={favArray} setFavArray={setFavArray} />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
+      <BackToTop />
       <Footer />
     </Router>
   );
