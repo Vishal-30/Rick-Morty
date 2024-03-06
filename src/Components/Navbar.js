@@ -1,7 +1,7 @@
 import React from "react";
 import { NavLink, Link } from "react-router-dom";
 
-const Navbar = ({ favCount }) => {
+const Navbar = ({ favCount, theme, toggleTheme }) => {
   return (
     <nav className="navbar">
       <div className="container">
@@ -9,6 +9,9 @@ const Navbar = ({ favCount }) => {
           <div className="navbar-links">
             <NavLink to="/" className="nav-link">CHARACTERS</NavLink>
             <NavLink to="/favourites" className="nav-link">FAVOURITES ({favCount})</NavLink>
+            <button className="theme-toggle-btn" onClick={toggleTheme}>
+              {theme === "light" ? "Dark Mode" : "Light Mode"}
+            </button>
           </div>
         </div>
     </nav>

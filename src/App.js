@@ -13,6 +13,10 @@ import Favourites from "./Favourites";
 import "./App.css";
 
 function App() {
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem("theme") || "light";
+  });
+
   const [favArray, setFavArray] = useState(() => {
     const savedFavourites = localStorage.getItem("favourites");
 
@@ -27,10 +31,19 @@ function App() {
     localStorage.setItem("favourites", JSON.stringify(favArray));
   }, [favArray]);
 
+  useEffect(() => {
+    localStorage.setItem("theme", theme);
+    document.body.setAttribute("data-theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
+  };
+
   return (
     <Router>
       <div className="App">
-        <Navbar favCount={favArray.length} />
+        <Navbar favCount={favArray.length} theme={theme} toggleTheme={toggleTheme} />
       </div>
       <Routes>
         <Route
