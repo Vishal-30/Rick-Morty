@@ -10,7 +10,7 @@ const Navbar = ({ favCount, theme, toggleTheme }) => {
             <NavLink to="/" className="nav-link">CHARACTERS</NavLink>
             <NavLink to="/favourites" className="nav-link">FAVOURITES ({favCount})</NavLink>
             <button className="theme-toggle-btn" onClick={toggleTheme}>
-              {theme === "light" ? "Dark Mode" : "Light Mode"}
+              <i className={theme === "light" ? "fa-solid fa-moon" : "fa-solid fa-sun"}></i>
             </button>
           </div>
         </div>

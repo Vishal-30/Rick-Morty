@@ -28,7 +28,7 @@ const BackToTop = () => {
 
   return (
     <button className="back-to-top-btn" onClick={scrollToTop}>
-      ^
+      <i className="fa-solid fa-chevron-up"></i>
     </button>
   );
 };
