@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Card from "./Components/Card";
 import Search from "./Components/Search";
 
-const Favourites = ({ favArray, setFavArray }) => {
+const Favourites = ({ favArray, setFavArray, setToastMessage }) => {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("");
   const [firstCompareId, setFirstCompareId] = useState("");
@@ -149,10 +149,22 @@ const Favourites = ({ favArray, setFavArray }) => {
       )}
       <div className="row g-4 justify-content-center App--container">
         {filteredChars.length > 0 ? (
-          <Card results={filteredChars} favArray={favArray} setFavArray={setFavArray} />
+          <Card
+            results={filteredChars}
+            favArray={favArray}
+            setFavArray={setFavArray}
+            setToastMessage={setToastMessage}
+          />
         ) : (
           <div className="col-12">
-            <p>{uniqueChars.length > 0 ? "No favourite characters found." : "No favourite characters added yet."}</p>
+            <div className="empty-state-box">
+              <h3>{uniqueChars.length > 0 ? "No favourite characters found" : "No favourite characters yet"}</h3>
+              <p>
+                {uniqueChars.length > 0
+                  ? `No favourites matched "${search}". Try a different name.`
+                  : "Add some favourite characters to compare and explore them here."}
+              </p>
+            </div>
           </div>
         )}
       </div>

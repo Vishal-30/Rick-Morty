@@ -8,11 +8,13 @@ import Footer from "./Components/Footer";
 import CharacterDetails from "./Components/CharacterDetails";
 import BackToTop from "./Components/BackToTop";
 import NotFound from "./Components/NotFound";
+import ToastMessage from "./Components/ToastMessage";
 import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
 import Favourites from "./Favourites";
 import "./App.css";
 
 function App() {
+  const [toastMessage, setToastMessage] = useState("");
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem("theme") || "light";
   });
@@ -36,6 +38,18 @@ function App() {
     document.body.setAttribute("data-theme", theme);
   }, [theme]);
 
+  useEffect(() => {
+    if (!toastMessage) {
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setToastMessage("");
+    }, 2200);
+
+    return () => clearTimeout(timer);
+  }, [toastMessage]);
+
   const toggleTheme = () => {
     setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
   };
@@ -48,19 +62,35 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={<Home favArray={favArray} setFavArray={setFavArray} />}
+          element={
+            <Home
+              favArray={favArray}
+              setFavArray={setFavArray}
+              setToastMessage={setToastMessage}
+            />
+          }
         />
         <Route path="/character/:id" element={<CharacterDetails />} />
-        <Route path="/favourites" element={<Favourites favArray={favArray} setFavArray={setFavArray} />} />
+        <Route
+          path="/favourites"
+          element={
+            <Favourites
+              favArray={favArray}
+              setFavArray={setFavArray}
+              setToastMessage={setToastMessage}
+            />
+          }
+        />
         <Route path="*" element={<NotFound />} />
       </Routes>
+      <ToastMessage message={toastMessage} />
       <BackToTop />
       <Footer />
     </Router>
   );
 }
 
-const Home = ({ favArray, setFavArray }) => {
+const Home = ({ favArray, setFavArray, setToastMessage }) => {
   const navigate = useNavigate();
   const charactersPerPage = 20;
   let [pageNumber, updatePageNumber] = useState(1);
@@ -310,9 +340,25 @@ const Home = ({ favArray, setFavArray }) => {
       )}
       <div className="row g-4 justify-content-center App--container">
         {loading && <SkeletonCards />}
-        {!loading && error && <div className="col-12"><p>{error}</p></div>}
+        {!loading && error && (
+          <div className="col-12">
+            <div className="empty-state-box">
+              <h3>No characters found</h3>
+              <p>
+                {search
+                  ? `No characters matched "${search}". Try a different search or clear your filters.`
+                  : error}
+              </p>
+            </div>
+          </div>
+        )}
         {!loading && !error && (
-          <Card favArray={favArray} setFavArray={setFavArray} results={displayedResults} />
+          <Card
+            favArray={favArray}
+            setFavArray={setFavArray}
+            setToastMessage={setToastMessage}
+            results={displayedResults}
+          />
         )}
       </div>
       {!error && currentInfo && (

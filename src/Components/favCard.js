@@ -12,12 +12,18 @@ const FavCard = (props) => {
 
     if (props.card.favourite) {
       props.setFavArray(props.favArray.filter((item) => item.id !== props.card.id));
+      if (props.setToastMessage) {
+        props.setToastMessage(`${props.card.name} removed from favourites`);
+      }
     } else {
       let updatedCard = {
         ...props.card,
         favourite: true,
       };
       props.setFavArray([...props.favArray, updatedCard]);
+      if (props.setToastMessage) {
+        props.setToastMessage(`${props.card.name} added to favourites`);
+      }
     }
   };
 

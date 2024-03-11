@@ -45,7 +45,12 @@ export default function Card(props) {
                 </Link>
               </div>
             </div>
-            <FavCard card={newCard} favArray={props.favArray} setFavArray={props.setFavArray} />
+            <FavCard
+              card={newCard}
+              favArray={props.favArray}
+              setFavArray={props.setFavArray}
+              setToastMessage={props.setToastMessage}
+            />
           </div>
         </div>
       );

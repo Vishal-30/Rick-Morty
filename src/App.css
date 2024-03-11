@@ -520,6 +520,37 @@ body[data-theme="dark"] {
   margin-bottom: 0.5rem;
 }
 
+.toast-message {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1200;
+  background-color: var(--surface-color);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 0.9rem 1rem;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
+  font-weight: 600;
+}
+
+.empty-state-box {
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-soft);
+  border-radius: 16px;
+  padding: 1.5rem;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.empty-state-box h3 {
+  margin-bottom: 0.5rem;
+}
+
+.empty-state-box p {
+  margin-bottom: 0;
+}
+
 .skeleton-card {
   min-height: 320px;
   padding-bottom: 1rem;
