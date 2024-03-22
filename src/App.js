@@ -97,6 +97,15 @@ const Home = ({ favArray, setFavArray, setToastMessage }) => {
   let [fetchedData, updateFetchedData] = useState([]);
   let [allCharacters, setAllCharacters] = useState([]);
   let [search, setSearch] = useState("");
+  let [recentSearches, setRecentSearches] = useState(() => {
+    const savedRecentSearches = localStorage.getItem("recentSearches");
+
+    if (savedRecentSearches) {
+      return JSON.parse(savedRecentSearches);
+    }
+
+    return [];
+  });
   let [status, setStatus] = useState("");
   let [gender, setGender] = useState("");
   let [species, setSpecies] = useState("");
@@ -218,6 +227,20 @@ const Home = ({ favArray, setFavArray, setToastMessage }) => {
     updatePageNumber(1);
   }, [search, status, gender, species, origin, sort]);
 
+  useEffect(() => {
+    if (!search.trim()) {
+      return;
+    }
+
+    const updatedSearches = [
+      search,
+      ...recentSearches.filter((item) => item.toLowerCase() !== search.toLowerCase()),
+    ].slice(0, 5);
+
+    setRecentSearches(updatedSearches);
+    localStorage.setItem("recentSearches", JSON.stringify(updatedSearches));
+  }, [search]);
+
   let displayedResults = results ? [...results] : [];
   let currentInfo = info;
 
@@ -262,6 +285,23 @@ const Home = ({ favArray, setFavArray, setToastMessage }) => {
       <div className="container py-4">
       <h1 className="App-header">Rick & Morty Characters</h1>
       <Search search={search} setSearch={setSearch} updatePageNumber={updatePageNumber} />
+      {recentSearches.length > 0 && (
+        <div className="recent-searches">
+          <span>Recent searches:</span>
+          {recentSearches.map((item) => (
+            <button
+              key={item}
+              className="recent-search-btn"
+              onClick={() => {
+                setSearch(item);
+                updatePageNumber(1);
+              }}
+            >
+              {item}
+            </button>
+          ))}
+        </div>
+      )}
       <div className="filter-bar">
         <select
           className="filter-select"

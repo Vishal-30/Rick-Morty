@@ -111,12 +111,18 @@ body[data-theme="dark"] {
   text-decoration: none;
   font-size: 1.5rem;
   border-bottom: 2px solid var(--text-color);
+  transition: color 0.2s ease, border-color 0.2s ease;
 
 }
 
 .navbar-links a:hover {
   color: var(--link-hover);
   border-bottom: 2px solid var(--link-hover);
+}
+
+.nav-link-active {
+  color: var(--link-hover) !important;
+  border-bottom: 2px solid var(--link-hover) !important;
 }
 
 .search-form {
@@ -149,6 +155,7 @@ body[data-theme="dark"] {
   background-color: var(--input-bg);
   color: var(--text-color);
   cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .search-btn-clear {
@@ -190,6 +197,7 @@ body[data-theme="dark"] {
   color: var(--text-color);
   font-weight: 600;
   cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .App {
@@ -204,6 +212,25 @@ body[data-theme="dark"] {
 .results-count {
   margin-bottom: 1rem;
   font-weight: 600;
+}
+
+.recent-searches {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.recent-search-btn {
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  padding: 0.45rem 0.85rem;
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .App--container {
@@ -222,6 +249,7 @@ body[data-theme="dark"] {
 
 .character-card {
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .card-inner {
@@ -419,11 +447,14 @@ body[data-theme="dark"] {
   color: var(--text-color);
   cursor: pointer;
   margin-bottom: 1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .clear-favourites-btn:hover,
 .search-btn:hover,
-.filter-select:hover {
+.filter-select:hover,
+.theme-toggle-btn:hover,
+.recent-search-btn:hover {
   opacity: 0.95;
 }
 
@@ -436,6 +467,7 @@ body[data-theme="dark"] {
   padding: 0.55rem 0.85rem;
   background-color: var(--input-bg);
   font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .details-page {
@@ -486,6 +518,20 @@ body[data-theme="dark"] {
   margin-inline: auto;
   display: block;
   border-radius: 12px;
+}
+
+.character-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.14);
+}
+
+.search-btn:hover,
+.theme-toggle-btn:hover,
+.recent-search-btn:hover,
+.details-link-btn:hover,
+.clear-favourites-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
 }
 
 .back-to-top-btn {
