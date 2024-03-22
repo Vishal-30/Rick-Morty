@@ -26,6 +26,17 @@ const Favourites = ({ favArray, setFavArray, setToastMessage }) => {
 
   const firstCharacter = uniqueChars.find((character) => String(character.id) === firstCompareId);
   const secondCharacter = uniqueChars.find((character) => String(character.id) === secondCompareId);
+  const statusDifferent = firstCharacter && secondCharacter && firstCharacter.status !== secondCharacter.status;
+  const genderDifferent = firstCharacter && secondCharacter && firstCharacter.gender !== secondCharacter.gender;
+  const speciesDifferent = firstCharacter && secondCharacter && firstCharacter.species !== secondCharacter.species;
+  const originDifferent =
+    firstCharacter &&
+    secondCharacter &&
+    firstCharacter.origin.name !== secondCharacter.origin.name;
+  const locationDifferent =
+    firstCharacter &&
+    secondCharacter &&
+    firstCharacter.location.name !== secondCharacter.location.name;
 
   return (
     <div className="App">
@@ -94,19 +105,19 @@ const Favourites = ({ favArray, setFavArray, setToastMessage }) => {
                     alt={firstCharacter.name}
                   />
                   <h3 className="compare-card-title">{firstCharacter.name}</h3>
-                  <div className="card--name">
+                  <div className={statusDifferent ? "card--name compare-different" : "card--name"}>
                     <span>Status:</span>{firstCharacter.status}
                   </div>
-                  <div className="card--name">
+                  <div className={genderDifferent ? "card--name compare-different" : "card--name"}>
                     <span>Gender:</span>{firstCharacter.gender}
                   </div>
-                  <div className="card--name">
+                  <div className={speciesDifferent ? "card--name compare-different" : "card--name"}>
                     <span>Species:</span>{firstCharacter.species}
                   </div>
-                  <div className="card--name">
+                  <div className={originDifferent ? "card--name compare-different" : "card--name"}>
                     <span>Origin:</span>{firstCharacter.origin.name}
                   </div>
-                  <div className="card--name">
+                  <div className={locationDifferent ? "card--name compare-different" : "card--name"}>
                     <span>Location:</span>{firstCharacter.location.name}
                   </div>
                 </div>
@@ -120,19 +131,19 @@ const Favourites = ({ favArray, setFavArray, setToastMessage }) => {
                     alt={secondCharacter.name}
                   />
                   <h3 className="compare-card-title">{secondCharacter.name}</h3>
-                  <div className="card--name">
+                  <div className={statusDifferent ? "card--name compare-different" : "card--name"}>
                     <span>Status:</span>{secondCharacter.status}
                   </div>
-                  <div className="card--name">
+                  <div className={genderDifferent ? "card--name compare-different" : "card--name"}>
                     <span>Gender:</span>{secondCharacter.gender}
                   </div>
-                  <div className="card--name">
+                  <div className={speciesDifferent ? "card--name compare-different" : "card--name"}>
                     <span>Species:</span>{secondCharacter.species}
                   </div>
-                  <div className="card--name">
+                  <div className={originDifferent ? "card--name compare-different" : "card--name"}>
                     <span>Origin:</span>{secondCharacter.origin.name}
                   </div>
-                  <div className="card--name">
+                  <div className={locationDifferent ? "card--name compare-different" : "card--name"}>
                     <span>Location:</span>{secondCharacter.location.name}
                   </div>
                 </div>

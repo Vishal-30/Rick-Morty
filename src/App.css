@@ -512,6 +512,13 @@ body[data-theme="dark"] {
   margin: 1rem 0;
 }
 
+.compare-different {
+  background-color: var(--pagination-hover-bg);
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+  padding: 0.45rem 0.6rem;
+}
+
 .compare-image {
   width: 100%;
   max-width: 260px;
