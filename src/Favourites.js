@@ -38,6 +38,17 @@ const Favourites = ({ favArray, setFavArray, setToastMessage }) => {
     secondCharacter &&
     firstCharacter.location.name !== secondCharacter.location.name;
 
+  const exportFavourites = () => {
+    const dataStr = JSON.stringify(uniqueChars, null, 2);
+    const blob = new Blob([dataStr], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "favourites.json";
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="App">
       <div className="container py-4">
@@ -154,9 +165,14 @@ const Favourites = ({ favArray, setFavArray, setToastMessage }) => {
       )}
       <p className="results-count">Showing {filteredChars.length} favourite characters</p>
       {uniqueChars.length > 0 && (
-        <button className="clear-favourites-btn" onClick={() => setFavArray([])}>
-          Clear All Favourites
-        </button>
+        <div className="favourites-actions">
+          <button className="clear-favourites-btn" onClick={exportFavourites}>
+            Export Favourites
+          </button>
+          <button className="clear-favourites-btn" onClick={() => setFavArray([])}>
+            Clear All Favourites
+          </button>
+        </div>
       )}
       <div className="row g-4 justify-content-center App--container">
         {filteredChars.length > 0 ? (

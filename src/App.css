@@ -264,6 +264,13 @@ body[data-theme="dark"] {
   margin-top: 0.25rem;
 }
 
+.card-episode-count {
+  margin-bottom: 0.75rem;
+  color: var(--muted-text);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
 .card--image {
   max-width: 100%;
   height: auto;
@@ -517,6 +524,14 @@ body[data-theme="dark"] {
   border: 1px solid var(--border-soft);
   border-radius: 8px;
   padding: 0.45rem 0.6rem;
+}
+
+.favourites-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
 }
 
 .compare-image {
