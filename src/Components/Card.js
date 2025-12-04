@@ -19,7 +19,7 @@ export default function Card(props) {
   let display;
   if (props.results && props.results.length > 0) {
     display = props.results.map((card) => {
-      let { image, name, status, episode } = card; 
+      let { image, name, status, episode, species, gender } = card; 
       const isFavourite = props.favArray?.some((fav) => fav.id === card.id);
       let newCard = {
         ...card,
@@ -40,6 +40,10 @@ export default function Card(props) {
               <div className="card-content">
                 <div className={`status-badge ${statusClass}`}>{status}</div>
                 <div className="card--name card--center">{name}</div>
+                <div className="card-meta-row">
+                  <span className="card-meta-pill">{species}</span>
+                  <span className="card-meta-pill">{gender}</span>
+                </div>
                 <div className="card-episode-count">Episodes: {episode.length}</div>
                 <Link to={`/character/${card.id}`} className="details-link-btn card-link-btn">
                   View Details
