@@ -231,14 +231,31 @@ body[data-theme="dark"] {
   margin-bottom: 1rem;
 }
 
-.recent-search-btn {
+.recent-search-pill {
+  display: inline-flex;
+  align-items: center;
   border: 1px solid var(--border-color);
   border-radius: 999px;
-  padding: 0.45rem 0.85rem;
   background-color: var(--input-bg);
+  overflow: hidden;
+}
+
+.recent-search-btn {
+  border: 0;
+  padding: 0.45rem 0.85rem;
+  background-color: transparent;
   color: var(--text-color);
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.recent-search-remove {
+  border: 0;
+  border-left: 1px solid var(--border-color);
+  background-color: transparent;
+  color: var(--muted-text);
+  padding: 0.45rem 0.7rem;
+  cursor: pointer;
 }
 
 .App--container {

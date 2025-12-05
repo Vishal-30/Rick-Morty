@@ -333,6 +333,12 @@ const Home = ({ favArray, setFavArray, setToastMessage }) => {
     navigate(`/character/${randomId}`);
   };
 
+  const removeRecentSearch = (searchItem) => {
+    const updatedSearches = recentSearches.filter((item) => item !== searchItem);
+    setRecentSearches(updatedSearches);
+    localStorage.setItem("recentSearches", JSON.stringify(updatedSearches));
+  };
+
   return (
     <div className="App">
       <div className="container py-4">
@@ -342,16 +348,23 @@ const Home = ({ favArray, setFavArray, setToastMessage }) => {
         <div className="recent-searches">
           <span>Recent searches:</span>
           {recentSearches.map((item) => (
-            <button
-              key={item}
-              className="recent-search-btn"
-              onClick={() => {
-                setSearch(item);
-                updatePageNumber(1);
-              }}
-            >
-              {item}
-            </button>
+            <div key={item} className="recent-search-pill">
+              <button
+                className="recent-search-btn"
+                onClick={() => {
+                  setSearch(item);
+                  updatePageNumber(1);
+                }}
+              >
+                {item}
+              </button>
+              <button
+                className="recent-search-remove"
+                onClick={() => removeRecentSearch(item)}
+              >
+                <i className="fa-solid fa-xmark"></i>
+              </button>
+            </div>
           ))}
         </div>
       )}
