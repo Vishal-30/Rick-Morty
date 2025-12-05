@@ -111,6 +111,7 @@ const Home = ({ favArray, setFavArray, setToastMessage }) => {
   let [species, setSpecies] = useState("");
   let [origin, setOrigin] = useState("");
   let [sort, setSort] = useState("");
+  let [showOnlyFavourites, setShowOnlyFavourites] = useState(false);
   let [loading, setLoading] = useState(true);
   let [error, setError] = useState("");
   let { info, results } = fetchedData;
@@ -244,7 +245,58 @@ const Home = ({ favArray, setFavArray, setToastMessage }) => {
   let displayedResults = results ? [...results] : [];
   let currentInfo = info;
 
-  if ((sort || origin) && allCharacters.length >= 0) {
+  if (showOnlyFavourites) {
+    let favouriteResults = [...favArray];
+
+    if (search) {
+      favouriteResults = favouriteResults.filter((character) =>
+        character.name.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+
+    if (status) {
+      favouriteResults = favouriteResults.filter(
+        (character) => character.status.toLowerCase() === status.toLowerCase()
+      );
+    }
+
+    if (gender) {
+      favouriteResults = favouriteResults.filter(
+        (character) => character.gender.toLowerCase() === gender.toLowerCase()
+      );
+    }
+
+    if (species) {
+      favouriteResults = favouriteResults.filter((character) =>
+        character.species.toLowerCase().includes(species.toLowerCase())
+      );
+    }
+
+    if (origin) {
+      favouriteResults = favouriteResults.filter((character) =>
+        character.origin.name.toLowerCase().includes(origin.toLowerCase())
+      );
+    }
+
+    if (sort === "name-asc") {
+      favouriteResults.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    if (sort === "name-desc") {
+      favouriteResults.sort((a, b) => b.name.localeCompare(a.name));
+    }
+
+    let startIndex = (pageNumber - 1) * charactersPerPage;
+    let endIndex = startIndex + charactersPerPage;
+
+    displayedResults = favouriteResults.slice(startIndex, endIndex);
+    currentInfo = {
+      count: favouriteResults.length,
+      pages: Math.max(1, Math.ceil(favouriteResults.length / charactersPerPage)),
+    };
+  }
+
+  if (!showOnlyFavourites && (sort || origin) && allCharacters.length >= 0) {
     let sortedCharacters = [...allCharacters];
 
     if (sort === "name-asc") {
@@ -271,6 +323,7 @@ const Home = ({ favArray, setFavArray, setToastMessage }) => {
     setSpecies("");
     setOrigin("");
     setSort("");
+    setShowOnlyFavourites(false);
     setSearch("");
     updatePageNumber(1);
   };
@@ -366,6 +419,16 @@ const Home = ({ favArray, setFavArray, setToastMessage }) => {
           <option value="name-asc">Name A-Z</option>
           <option value="name-desc">Name Z-A</option>
         </select>
+
+        <button
+          className={showOnlyFavourites ? "search-btn favourite-toggle-btn active-toggle" : "search-btn favourite-toggle-btn"}
+          onClick={() => {
+            setShowOnlyFavourites(!showOnlyFavourites);
+            updatePageNumber(1);
+          }}
+        >
+          Favourites Only
+        </button>
 
         <button className="search-btn search-btn-clear" onClick={clearFilters}>
           Clear Filters

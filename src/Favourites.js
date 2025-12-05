@@ -5,6 +5,7 @@ import Search from "./Components/Search";
 const Favourites = ({ favArray, setFavArray, setToastMessage }) => {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
   const [firstCompareId, setFirstCompareId] = useState("");
   const [secondCompareId, setSecondCompareId] = useState("");
 
@@ -15,6 +16,12 @@ const Favourites = ({ favArray, setFavArray, setToastMessage }) => {
   let filteredChars = uniqueChars.filter((character) =>
     character.name.toLowerCase().includes(search.toLowerCase())
   );
+
+  if (statusFilter) {
+    filteredChars = filteredChars.filter(
+      (character) => character.status.toLowerCase() === statusFilter.toLowerCase()
+    );
+  }
 
   if (sort === "name-asc") {
     filteredChars = [...filteredChars].sort((a, b) => a.name.localeCompare(b.name));
@@ -49,6 +56,44 @@ const Favourites = ({ favArray, setFavArray, setToastMessage }) => {
     URL.revokeObjectURL(url);
   };
 
+  const importFavourites = (event) => {
+    const file = event.target.files[0];
+
+    if (!file) {
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      try {
+        const importedData = JSON.parse(e.target.result);
+
+        if (!Array.isArray(importedData)) {
+          return;
+        }
+
+        const mergedFavourites = [...favArray, ...importedData];
+        const uniqueMergedFavourites = Array.from(
+          new Map(mergedFavourites.map((item) => [item.id, item])).values()
+        );
+
+        setFavArray(uniqueMergedFavourites);
+
+        if (setToastMessage) {
+          setToastMessage("Favourites imported successfully");
+        }
+      } catch (error) {
+        if (setToastMessage) {
+          setToastMessage("Invalid favourites file");
+        }
+      }
+    };
+
+    reader.readAsText(file);
+    event.target.value = "";
+  };
+
   return (
     <div className="App">
       <div className="container py-4">
@@ -69,6 +114,19 @@ const Favourites = ({ favArray, setFavArray, setToastMessage }) => {
           <option value="">Sort Favourites</option>
           <option value="name-asc">Name A-Z</option>
           <option value="name-desc">Name Z-A</option>
+        </select>
+
+        <select
+          className="filter-select"
+          value={statusFilter}
+          onChange={(e) => {
+            setStatusFilter(e.target.value);
+          }}
+        >
+          <option value="">All Favourite Status</option>
+          <option value="alive">Alive</option>
+          <option value="dead">Dead</option>
+          <option value="unknown">Unknown</option>
         </select>
       </div>
       {uniqueChars.length >= 2 && (
@@ -166,6 +224,10 @@ const Favourites = ({ favArray, setFavArray, setToastMessage }) => {
       <p className="results-count">Showing {filteredChars.length} favourite characters</p>
       {uniqueChars.length > 0 && (
         <div className="favourites-actions">
+          <label className="clear-favourites-btn import-favourites-btn">
+            Import Favourites
+            <input type="file" accept=".json" onChange={importFavourites} hidden />
+          </label>
           <button className="clear-favourites-btn" onClick={exportFavourites}>
             Export Favourites
           </button>

@@ -166,6 +166,14 @@ body[data-theme="dark"] {
   background-color: var(--accent-cool);
 }
 
+.favourite-toggle-btn {
+  background-color: var(--surface-soft);
+}
+
+.active-toggle {
+  background-color: var(--pagination-active-bg);
+}
+
 .filter-bar {
   display: flex;
   justify-content: center;
@@ -555,6 +563,12 @@ body[data-theme="dark"] {
   gap: 1rem;
   flex-wrap: wrap;
   margin-bottom: 1rem;
+}
+
+.import-favourites-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .compare-image {
