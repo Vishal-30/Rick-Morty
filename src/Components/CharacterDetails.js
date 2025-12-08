@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Episodes from "./Episode";
 
-const CharacterDetails = () => {
+const CharacterDetails = ({ setToastMessage }) => {
   const { id } = useParams();
   const [character, setCharacter] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -31,10 +31,42 @@ const CharacterDetails = () => {
     })();
   }, [id]);
 
+  const copyCharacterLink = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+
+      if (setToastMessage) {
+        setToastMessage("Character link copied");
+      }
+    } catch (err) {
+      if (setToastMessage) {
+        setToastMessage("Could not copy link");
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div className="container py-4">
-        <p>Loading character details...</p>
+        <div className="details-page details-fade-in">
+          <div className="details-header">
+            <div className="details-link-btn details-skeleton-btn"></div>
+          </div>
+          <div className="modal-layout details-layout">
+            <div className="modal-left">
+              <div className="details-skeleton-image"></div>
+            </div>
+            <div className="modal-right">
+              <div className="details-skeleton-title"></div>
+              <div className="details-skeleton-line"></div>
+              <div className="details-skeleton-line"></div>
+              <div className="details-skeleton-line"></div>
+              <div className="details-skeleton-line"></div>
+              <div className="details-skeleton-line"></div>
+              <div className="details-skeleton-line"></div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -52,11 +84,15 @@ const CharacterDetails = () => {
 
   return (
     <div className="container py-4">
-      <div className="details-page">
+      <div className="details-page details-fade-in">
         <div className="details-header">
           <Link to="/" className="details-link-btn">
             Back to Characters
           </Link>
+          <button className="details-link-btn details-copy-btn" onClick={copyCharacterLink}>
+            <i className="fa-solid fa-link"></i>
+            <span>Copy Link</span>
+          </button>
         </div>
         <div className="modal-layout details-layout">
           <div className="modal-left">

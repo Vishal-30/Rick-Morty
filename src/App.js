@@ -70,7 +70,10 @@ function App() {
             />
           }
         />
-        <Route path="/character/:id" element={<CharacterDetails />} />
+        <Route
+          path="/character/:id"
+          element={<CharacterDetails setToastMessage={setToastMessage} />}
+        />
         <Route
           path="/favourites"
           element={

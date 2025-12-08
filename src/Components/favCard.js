@@ -29,7 +29,13 @@ const FavCard = (props) => {
 
   return (
     <div>
-      <img src={starIcon} alt="star" onClick={toggleFavourite} className="star" />
+      <img
+        src={starIcon}
+        alt="star"
+        onClick={toggleFavourite}
+        className="star"
+        title="Toggle favourite"
+      />
     </div>
   );
 };

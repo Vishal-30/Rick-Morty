@@ -132,6 +132,17 @@ const Favourites = ({ favArray, setFavArray, setToastMessage }) => {
       {uniqueChars.length >= 2 && (
         <div className="compare-section">
           <h2 className="compare-title">Compare Favourite Characters</h2>
+          <div className="compare-actions">
+            <button
+              className="clear-favourites-btn compare-reset-btn"
+              onClick={() => {
+                setFirstCompareId("");
+                setSecondCompareId("");
+              }}
+            >
+              Reset Compare
+            </button>
+          </div>
           <div className="filter-bar">
             <select
               className="filter-select"
