@@ -23,7 +23,7 @@ const Pagination = (props) => {
   }
 
   return (
-    <nav className="d-flex justify-content-center mt-4" aria-label="Character pagination">
+    <nav className="pagination-wrapper" aria-label="Character pagination">
       <ul className="pagination pagination-md flex-wrap">
         <li className={props.pageNumber === 1 ? "page-item disabled" : "page-item"}>
           <button onClick={() => pageChange(1)} className="page-link">

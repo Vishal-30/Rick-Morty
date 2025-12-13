@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Card from "./Components/Card";
+import Pagination from "./Components/Pagination";
 import Search from "./Components/Search";
 
 const Favourites = ({ favArray, setFavArray, setToastMessage }) => {
+  const charactersPerPage = 20;
+  const [pageNumber, setPageNumber] = useState(1);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
@@ -30,6 +33,18 @@ const Favourites = ({ favArray, setFavArray, setToastMessage }) => {
   if (sort === "name-desc") {
     filteredChars = [...filteredChars].sort((a, b) => b.name.localeCompare(a.name));
   }
+
+  useEffect(() => {
+    setPageNumber(1);
+  }, [search, sort, statusFilter]);
+
+  const startIndex = (pageNumber - 1) * charactersPerPage;
+  const endIndex = startIndex + charactersPerPage;
+  const paginatedChars = filteredChars.slice(startIndex, endIndex);
+  const paginationInfo = {
+    count: filteredChars.length,
+    pages: Math.max(1, Math.ceil(filteredChars.length / charactersPerPage)),
+  };
 
   const firstCharacter = uniqueChars.find((character) => String(character.id) === firstCompareId);
   const secondCharacter = uniqueChars.find((character) => String(character.id) === secondCompareId);
@@ -280,9 +295,9 @@ const Favourites = ({ favArray, setFavArray, setToastMessage }) => {
         </div>
       )}
       <div className="row g-4 justify-content-center App--container">
-        {filteredChars.length > 0 ? (
+        {paginatedChars.length > 0 ? (
           <Card
-            results={filteredChars}
+            results={paginatedChars}
             favArray={favArray}
             setFavArray={setFavArray}
             setToastMessage={setToastMessage}
@@ -300,6 +315,18 @@ const Favourites = ({ favArray, setFavArray, setToastMessage }) => {
           </div>
         )}
       </div>
+      {filteredChars.length > 0 && (
+        <>
+          <p className="pagination-info">
+            Page {pageNumber} of {paginationInfo.pages}
+          </p>
+          <Pagination
+            info={paginationInfo}
+            pageNumber={pageNumber}
+            updatePageNumber={setPageNumber}
+          />
+        </>
+      )}
       </div>
     </div>
   );

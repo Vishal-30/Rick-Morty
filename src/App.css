@@ -224,7 +224,7 @@ body[data-theme="dark"] {
 
 .results-summary,
 .pagination-info {
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   color: var(--muted-text);
   font-weight: 600;
 }
@@ -758,8 +758,8 @@ body[data-theme="dark"] {
 @media (min-width: 769px) {
   .sticky-filter-bar {
     position: sticky;
-    top: 88px;
-    z-index: 20;
+    top: 0;
+    z-index: 200;
     padding: 0.85rem 1rem;
     background-color: color-mix(in srgb, var(--surface-color) 92%, transparent);
     border: 1px solid var(--border-soft);
@@ -978,4 +978,11 @@ body[data-theme="dark"] {
 
 .pagination {
   margin-bottom: 0;
+}
+
+.pagination-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.25rem;
+  margin-bottom: 1.5rem;
 }
