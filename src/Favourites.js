@@ -94,6 +94,30 @@ const Favourites = ({ favArray, setFavArray, setToastMessage }) => {
     event.target.value = "";
   };
 
+  const handleFirstCompareChange = (value) => {
+    if (value && value === secondCompareId) {
+      setSecondCompareId("");
+
+      if (setToastMessage) {
+        setToastMessage("Choose two different favourites to compare");
+      }
+    }
+
+    setFirstCompareId(value);
+  };
+
+  const handleSecondCompareChange = (value) => {
+    if (value && value === firstCompareId) {
+      setFirstCompareId("");
+
+      if (setToastMessage) {
+        setToastMessage("Choose two different favourites to compare");
+      }
+    }
+
+    setSecondCompareId(value);
+  };
+
   return (
     <div className="App">
       <div className="container py-4">
@@ -148,12 +172,16 @@ const Favourites = ({ favArray, setFavArray, setToastMessage }) => {
               className="filter-select"
               value={firstCompareId}
               onChange={(e) => {
-                setFirstCompareId(e.target.value);
+                handleFirstCompareChange(e.target.value);
               }}
             >
               <option value="">Select first character</option>
               {uniqueChars.map((character) => (
-                <option key={character.id} value={character.id}>
+                <option
+                  key={character.id}
+                  value={character.id}
+                  disabled={String(character.id) === secondCompareId && secondCompareId !== ""}
+                >
                   {character.name}
                 </option>
               ))}
@@ -163,12 +191,16 @@ const Favourites = ({ favArray, setFavArray, setToastMessage }) => {
               className="filter-select"
               value={secondCompareId}
               onChange={(e) => {
-                setSecondCompareId(e.target.value);
+                handleSecondCompareChange(e.target.value);
               }}
             >
               <option value="">Select second character</option>
               {uniqueChars.map((character) => (
-                <option key={character.id} value={character.id}>
+                <option
+                  key={character.id}
+                  value={character.id}
+                  disabled={String(character.id) === firstCompareId && firstCompareId !== ""}
+                >
                   {character.name}
                 </option>
               ))}

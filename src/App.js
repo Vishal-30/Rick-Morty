@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Search from "./Components/Search";
 import Card from "./Components/Card";
 import Navbar from "./Components/Navbar";
@@ -15,6 +15,7 @@ import "./App.css";
 
 function App() {
   const [toastMessage, setToastMessage] = useState("");
+  const hasMountedFavourites = useRef(false);
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem("theme") || "light";
   });
@@ -31,6 +32,15 @@ function App() {
 
   useEffect(() => {
     localStorage.setItem("favourites", JSON.stringify(favArray));
+
+    if (!hasMountedFavourites.current) {
+      hasMountedFavourites.current = true;
+      return;
+    }
+
+    if (!toastMessage) {
+      setToastMessage("Favourites updated");
+    }
   }, [favArray]);
 
   useEffect(() => {
@@ -51,7 +61,11 @@ function App() {
   }, [toastMessage]);
 
   const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
+    setTheme((prevTheme) => {
+      const nextTheme = prevTheme === "light" ? "dark" : "light";
+      setToastMessage(`${nextTheme === "dark" ? "Dark" : "Light"} mode updated`);
+      return nextTheme;
+    });
   };
 
   return (
@@ -342,6 +356,15 @@ const Home = ({ favArray, setFavArray, setToastMessage }) => {
     localStorage.setItem("recentSearches", JSON.stringify(updatedSearches));
   };
 
+  const clearRecentSearches = () => {
+    setRecentSearches([]);
+    localStorage.removeItem("recentSearches");
+  };
+
+  const favouriteCountOnPage = displayedResults.filter((character) =>
+    favArray.some((item) => item.id === character.id)
+  ).length;
+
   return (
     <div className="App">
       <div className="container py-4">
@@ -369,9 +392,12 @@ const Home = ({ favArray, setFavArray, setToastMessage }) => {
               </button>
             </div>
           ))}
+          <button className="recent-search-clear" onClick={clearRecentSearches}>
+            Clear All
+          </button>
         </div>
       )}
-      <div className="filter-bar">
+      <div className="filter-bar sticky-filter-bar">
         <select
           className="filter-select"
           value={status}
@@ -455,7 +481,12 @@ const Home = ({ favArray, setFavArray, setToastMessage }) => {
         </button>
       </div>
       {!loading && !error && currentInfo && (
-        <p className="results-count">Showing {currentInfo.count} characters</p>
+        <>
+          <p className="results-count">Showing {currentInfo.count} characters</p>
+          <p className="results-summary">
+            {favouriteCountOnPage} favourites on this page
+          </p>
+        </>
       )}
       <div className="row g-4 justify-content-center App--container">
         {loading && <SkeletonCards />}
@@ -481,11 +512,16 @@ const Home = ({ favArray, setFavArray, setToastMessage }) => {
         )}
       </div>
       {!error && currentInfo && (
-        <Pagination
-          info={currentInfo}
-          pageNumber={pageNumber}
-          updatePageNumber={updatePageNumber}
-        />
+        <>
+          <p className="pagination-info">
+            Page {pageNumber} of {currentInfo.pages || 1}
+          </p>
+          <Pagination
+            info={currentInfo}
+            pageNumber={pageNumber}
+            updatePageNumber={updatePageNumber}
+          />
+        </>
       )}
       </div>
     </div>

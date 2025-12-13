@@ -100,6 +100,11 @@ const CharacterDetails = ({ setToastMessage }) => {
           </div>
           <div className="modal-right">
             <h1 className="details-title">{character.name}</h1>
+            <div className="details-chips">
+              <span className="details-chip">{character.status}</span>
+              <span className="details-chip">{character.species}</span>
+              <span className="details-chip">{character.gender}</span>
+            </div>
             <div className="card--name">
               <span>Id:</span>{character.id}
             </div>
