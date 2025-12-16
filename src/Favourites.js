@@ -9,8 +9,13 @@ const Favourites = ({ favArray, setFavArray, setToastMessage }) => {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const [firstCompareId, setFirstCompareId] = useState("");
-  const [secondCompareId, setSecondCompareId] = useState("");
+  const [speciesFilter, setSpeciesFilter] = useState("");
+  const [firstCompareId, setFirstCompareId] = useState(() => {
+    return localStorage.getItem("firstCompareId") || "";
+  });
+  const [secondCompareId, setSecondCompareId] = useState(() => {
+    return localStorage.getItem("secondCompareId") || "";
+  });
 
   let uniqueChars = Array.from(new Set(favArray.map((a) => a.id))).map((id) => {
     return favArray.find((a) => a.id === id);
@@ -26,6 +31,12 @@ const Favourites = ({ favArray, setFavArray, setToastMessage }) => {
     );
   }
 
+  if (speciesFilter) {
+    filteredChars = filteredChars.filter((character) =>
+      character.species.toLowerCase().includes(speciesFilter.toLowerCase())
+    );
+  }
+
   if (sort === "name-asc") {
     filteredChars = [...filteredChars].sort((a, b) => a.name.localeCompare(b.name));
   }
@@ -36,7 +47,12 @@ const Favourites = ({ favArray, setFavArray, setToastMessage }) => {
 
   useEffect(() => {
     setPageNumber(1);
-  }, [search, sort, statusFilter]);
+  }, [search, sort, statusFilter, speciesFilter]);
+
+  useEffect(() => {
+    localStorage.setItem("firstCompareId", firstCompareId);
+    localStorage.setItem("secondCompareId", secondCompareId);
+  }, [firstCompareId, secondCompareId]);
 
   const startIndex = (pageNumber - 1) * charactersPerPage;
   const endIndex = startIndex + charactersPerPage;
@@ -69,6 +85,10 @@ const Favourites = ({ favArray, setFavArray, setToastMessage }) => {
     link.download = "favourites.json";
     link.click();
     URL.revokeObjectURL(url);
+
+    if (setToastMessage) {
+      setToastMessage(`${uniqueChars.length} favourites exported`);
+    }
   };
 
   const importFavourites = (event) => {
@@ -85,6 +105,9 @@ const Favourites = ({ favArray, setFavArray, setToastMessage }) => {
         const importedData = JSON.parse(e.target.result);
 
         if (!Array.isArray(importedData)) {
+          if (setToastMessage) {
+            setToastMessage("Please import a valid favourites JSON file");
+          }
           return;
         }
 
@@ -92,11 +115,16 @@ const Favourites = ({ favArray, setFavArray, setToastMessage }) => {
         const uniqueMergedFavourites = Array.from(
           new Map(mergedFavourites.map((item) => [item.id, item])).values()
         );
+        const addedCount = uniqueMergedFavourites.length - favArray.length;
 
         setFavArray(uniqueMergedFavourites);
 
         if (setToastMessage) {
-          setToastMessage("Favourites imported successfully");
+          setToastMessage(
+            addedCount > 0
+              ? `${addedCount} favourites imported successfully`
+              : "No new favourites were added"
+          );
         }
       } catch (error) {
         if (setToastMessage) {
@@ -133,6 +161,43 @@ const Favourites = ({ favArray, setFavArray, setToastMessage }) => {
     setSecondCompareId(value);
   };
 
+  const clearFavouriteFilters = () => {
+    setSearch("");
+    setSort("");
+    setStatusFilter("");
+    setSpeciesFilter("");
+    setPageNumber(1);
+  };
+
+  const resetCompare = () => {
+    setFirstCompareId("");
+    setSecondCompareId("");
+    localStorage.removeItem("firstCompareId");
+    localStorage.removeItem("secondCompareId");
+  };
+
+  const activeSummary = [];
+
+  if (search) {
+    activeSummary.push(`Search: ${search}`);
+  }
+
+  if (statusFilter) {
+    activeSummary.push(`Status: ${statusFilter}`);
+  }
+
+  if (speciesFilter) {
+    activeSummary.push(`Species: ${speciesFilter}`);
+  }
+
+  if (sort === "name-asc") {
+    activeSummary.push("Sort: Name A-Z");
+  }
+
+  if (sort === "name-desc") {
+    activeSummary.push("Sort: Name Z-A");
+  }
+
   return (
     <div className="App">
       <div className="container py-4">
@@ -167,17 +232,32 @@ const Favourites = ({ favArray, setFavArray, setToastMessage }) => {
           <option value="dead">Dead</option>
           <option value="unknown">Unknown</option>
         </select>
+
+        <input
+          className="filter-select"
+          type="text"
+          placeholder="Filter by species"
+          value={speciesFilter}
+          onChange={(e) => {
+            setSpeciesFilter(e.target.value);
+          }}
+        />
+
+        <button className="clear-favourites-btn" onClick={clearFavouriteFilters}>
+          Clear Filters
+        </button>
       </div>
+      <p className="results-count">Showing {filteredChars.length} favourite characters</p>
+      <p className="results-summary">
+        {activeSummary.length > 0 ? activeSummary.join(" • ") : "All favourites are shown"}
+      </p>
       {uniqueChars.length >= 2 && (
         <div className="compare-section">
           <h2 className="compare-title">Compare Favourite Characters</h2>
           <div className="compare-actions">
             <button
               className="clear-favourites-btn compare-reset-btn"
-              onClick={() => {
-                setFirstCompareId("");
-                setSecondCompareId("");
-              }}
+              onClick={resetCompare}
             >
               Reset Compare
             </button>
@@ -279,7 +359,6 @@ const Favourites = ({ favArray, setFavArray, setToastMessage }) => {
           )}
         </div>
       )}
-      <p className="results-count">Showing {filteredChars.length} favourite characters</p>
       {uniqueChars.length > 0 && (
         <div className="favourites-actions">
           <label className="clear-favourites-btn import-favourites-btn">
@@ -308,8 +387,8 @@ const Favourites = ({ favArray, setFavArray, setToastMessage }) => {
               <h3>{uniqueChars.length > 0 ? "No favourite characters found" : "No favourite characters yet"}</h3>
               <p>
                 {uniqueChars.length > 0
-                  ? `No favourites matched "${search}". Try a different name.`
-                  : "Add some favourite characters to compare and explore them here."}
+                  ? "Try changing your search, status, or species filters to see more favourites."
+                  : "Add some favourite characters to build your own collection, compare them, and export them anytime."}
               </p>
             </div>
           </div>
