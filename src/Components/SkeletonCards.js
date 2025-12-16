@@ -11,6 +11,13 @@ const SkeletonCards = () => {
             <div className="skeleton-image"></div>
             <div className="skeleton-badge"></div>
             <div className="skeleton-name"></div>
+            <div className="skeleton-meta-row">
+              <div className="skeleton-pill"></div>
+              <div className="skeleton-pill"></div>
+            </div>
+            <div className="skeleton-origin"></div>
+            <div className="skeleton-line"></div>
+            <div className="skeleton-button"></div>
           </div>
         </div>
       ))}

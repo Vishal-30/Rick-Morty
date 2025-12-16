@@ -16,10 +16,41 @@ export default function Card(props) {
     setModal(false);
   };
 
+  const shareCharacter = async (event, card) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const shareUrl = `${window.location.origin}/character/${card.id}`;
+
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: card.name,
+          text: `Check out ${card.name}`,
+          url: shareUrl,
+        });
+      } else {
+        await navigator.clipboard.writeText(shareUrl);
+      }
+
+      if (props.setToastMessage) {
+        setTimeout(() => {
+          props.setToastMessage(`${card.name} link copied`);
+        }, 0);
+      }
+    } catch (err) {
+      if (err.name !== "AbortError" && props.setToastMessage) {
+        setTimeout(() => {
+          props.setToastMessage("Could not share character link");
+        }, 0);
+      }
+    }
+  };
+
   let display;
   if (props.results && props.results.length > 0) {
     display = props.results.map((card) => {
-      let { image, name, status, episode, species, gender } = card; 
+      let { image, name, status, episode, species, gender } = card;
       const isFavourite = props.favArray?.some((fav) => fav.id === card.id);
       let newCard = {
         ...card,
@@ -45,9 +76,19 @@ export default function Card(props) {
                   <span className="card-meta-pill">{gender}</span>
                 </div>
                 <div className="card-episode-count">Episodes: {episode.length}</div>
-                <Link to={`/character/${card.id}`} className="details-link-btn card-link-btn">
-                  View Details
-                </Link>
+                <div className="card-actions-row">
+                  <Link to={`/character/${card.id}`} className="details-link-btn card-link-btn">
+                    View Details
+                  </Link>
+                  <button
+                    className="details-link-btn card-share-btn"
+                    onClick={(event) => shareCharacter(event, card)}
+                    title="Copy or share character link"
+                  >
+                    <i className="fa-solid fa-share-nodes"></i>
+                    <span>Share</span>
+                  </button>
+                </div>
               </div>
             </div>
             <FavCard

@@ -28,7 +28,7 @@ const FavCard = (props) => {
   };
 
   return (
-    <div>
+    <div className="fav-badge">
       <img
         src={starIcon}
         alt="star"
