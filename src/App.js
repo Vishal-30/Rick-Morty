@@ -9,7 +9,13 @@ import CharacterDetails from "./Components/CharacterDetails";
 import BackToTop from "./Components/BackToTop";
 import NotFound from "./Components/NotFound";
 import ToastMessage from "./Components/ToastMessage";
-import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import Favourites from "./Favourites";
 import "./App.css";
 
@@ -109,11 +115,19 @@ function App() {
 
 const Home = ({ favArray, setFavArray, setToastMessage }) => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const charactersPerPage = 20;
-  let [pageNumber, updatePageNumber] = useState(1);
+  const hasInitializedFilters = useRef(false);
+  const hasRestoredScroll = useRef(false);
+  const isSyncingFromUrl = useRef(false);
+  const getInitialPage = () => {
+    const page = Number(searchParams.get("page"));
+    return page > 0 ? page : 1;
+  };
+  let [pageNumber, updatePageNumber] = useState(getInitialPage);
   let [fetchedData, updateFetchedData] = useState([]);
   let [allCharacters, setAllCharacters] = useState([]);
-  let [search, setSearch] = useState("");
+  let [search, setSearch] = useState(searchParams.get("name") || "");
   let [recentSearches, setRecentSearches] = useState(() => {
     const savedRecentSearches = localStorage.getItem("recentSearches");
 
@@ -123,12 +137,14 @@ const Home = ({ favArray, setFavArray, setToastMessage }) => {
 
     return [];
   });
-  let [status, setStatus] = useState("");
-  let [gender, setGender] = useState("");
-  let [species, setSpecies] = useState("");
-  let [origin, setOrigin] = useState("");
-  let [sort, setSort] = useState("");
-  let [showOnlyFavourites, setShowOnlyFavourites] = useState(false);
+  let [status, setStatus] = useState(searchParams.get("status") || "");
+  let [gender, setGender] = useState(searchParams.get("gender") || "");
+  let [species, setSpecies] = useState(searchParams.get("species") || "");
+  let [origin, setOrigin] = useState(searchParams.get("origin") || "");
+  let [sort, setSort] = useState(searchParams.get("sort") || "");
+  let [showOnlyFavourites, setShowOnlyFavourites] = useState(
+    searchParams.get("favourites") === "true"
+  );
   let [loading, setLoading] = useState(true);
   let [error, setError] = useState("");
   let { info, results } = fetchedData;
@@ -242,6 +258,16 @@ const Home = ({ favArray, setFavArray, setToastMessage }) => {
   }, [baseApi, sort, origin]);
 
   useEffect(() => {
+    if (!hasInitializedFilters.current) {
+      hasInitializedFilters.current = true;
+      return;
+    }
+
+    if (isSyncingFromUrl.current) {
+      isSyncingFromUrl.current = false;
+      return;
+    }
+
     updatePageNumber(1);
   }, [search, status, gender, species, origin, sort]);
 
@@ -258,6 +284,99 @@ const Home = ({ favArray, setFavArray, setToastMessage }) => {
     setRecentSearches(updatedSearches);
     localStorage.setItem("recentSearches", JSON.stringify(updatedSearches));
   }, [search]);
+
+  useEffect(() => {
+    const nextParams = new URLSearchParams();
+
+    if (search) {
+      nextParams.set("name", search);
+    }
+    if (status) {
+      nextParams.set("status", status);
+    }
+    if (gender) {
+      nextParams.set("gender", gender);
+    }
+    if (species) {
+      nextParams.set("species", species);
+    }
+    if (origin) {
+      nextParams.set("origin", origin);
+    }
+    if (sort) {
+      nextParams.set("sort", sort);
+    }
+    if (showOnlyFavourites) {
+      nextParams.set("favourites", "true");
+    }
+    if (pageNumber > 1) {
+      nextParams.set("page", pageNumber);
+    }
+
+    if (nextParams.toString() !== searchParams.toString()) {
+      setSearchParams(nextParams, { replace: true });
+    }
+  }, [
+    search,
+    status,
+    gender,
+    species,
+    origin,
+    sort,
+    showOnlyFavourites,
+    pageNumber,
+    searchParams,
+    setSearchParams,
+  ]);
+
+  useEffect(() => {
+    const nextSearch = searchParams.get("name") || "";
+    const nextStatus = searchParams.get("status") || "";
+    const nextGender = searchParams.get("gender") || "";
+    const nextSpecies = searchParams.get("species") || "";
+    const nextOrigin = searchParams.get("origin") || "";
+    const nextSort = searchParams.get("sort") || "";
+    const nextFavourites = searchParams.get("favourites") === "true";
+    const nextPage = Number(searchParams.get("page")) > 0 ? Number(searchParams.get("page")) : 1;
+    let didSyncFromUrl = false;
+
+    if (nextSearch !== search) {
+      didSyncFromUrl = true;
+      setSearch(nextSearch);
+    }
+    if (nextStatus !== status) {
+      didSyncFromUrl = true;
+      setStatus(nextStatus);
+    }
+    if (nextGender !== gender) {
+      didSyncFromUrl = true;
+      setGender(nextGender);
+    }
+    if (nextSpecies !== species) {
+      didSyncFromUrl = true;
+      setSpecies(nextSpecies);
+    }
+    if (nextOrigin !== origin) {
+      didSyncFromUrl = true;
+      setOrigin(nextOrigin);
+    }
+    if (nextSort !== sort) {
+      didSyncFromUrl = true;
+      setSort(nextSort);
+    }
+    if (nextFavourites !== showOnlyFavourites) {
+      didSyncFromUrl = true;
+      setShowOnlyFavourites(nextFavourites);
+    }
+    if (nextPage !== pageNumber) {
+      didSyncFromUrl = true;
+      updatePageNumber(nextPage);
+    }
+
+    if (didSyncFromUrl) {
+      isSyncingFromUrl.current = true;
+    }
+  }, [searchParams]);
 
   let displayedResults = results ? [...results] : [];
   let currentInfo = info;
@@ -361,9 +480,59 @@ const Home = ({ favArray, setFavArray, setToastMessage }) => {
     localStorage.removeItem("recentSearches");
   };
 
+  const saveScrollPosition = () => {
+    sessionStorage.setItem("homeScrollPosition", String(window.scrollY));
+  };
+
+  const reuseRecentSearch = (searchItem) => {
+    setSearch(searchItem);
+    updatePageNumber(1);
+
+    if (setToastMessage) {
+      setToastMessage(`Showing results for "${searchItem}"`);
+    }
+  };
+
+  const copyCurrentSearch = async () => {
+    if (!search.trim()) {
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(search);
+
+      if (setToastMessage) {
+        setToastMessage(`Copied "${search}"`);
+      }
+    } catch (err) {
+      if (setToastMessage) {
+        setToastMessage("Could not copy search");
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (loading || hasRestoredScroll.current) {
+      return;
+    }
+
+    const savedScroll = sessionStorage.getItem("homeScrollPosition");
+
+    if (savedScroll) {
+      window.scrollTo(0, Number(savedScroll));
+      sessionStorage.removeItem("homeScrollPosition");
+      hasRestoredScroll.current = true;
+    }
+  }, [loading]);
+
   const favouriteCountOnPage = displayedResults.filter((character) =>
     favArray.some((item) => item.id === character.id)
   ).length;
+  const aliveCount = displayedResults.filter((character) => character.status === "Alive").length;
+  const deadCount = displayedResults.filter((character) => character.status === "Dead").length;
+  const unknownCount = displayedResults.filter((character) => character.status === "unknown" || character.status === "Unknown").length;
+  const hasActiveFilters =
+    search || status || gender || species || origin || sort || showOnlyFavourites;
 
   return (
     <div className="App">
@@ -377,10 +546,8 @@ const Home = ({ favArray, setFavArray, setToastMessage }) => {
             <div key={item} className="recent-search-pill">
               <button
                 className="recent-search-btn"
-                onClick={() => {
-                  setSearch(item);
-                  updatePageNumber(1);
-                }}
+                onClick={() => reuseRecentSearch(item)}
+                title={`Search again for ${item}`}
               >
                 {item}
               </button>
@@ -392,6 +559,11 @@ const Home = ({ favArray, setFavArray, setToastMessage }) => {
               </button>
             </div>
           ))}
+          {search && (
+            <button className="recent-search-clear" onClick={copyCurrentSearch}>
+              Copy Search
+            </button>
+          )}
           <button className="recent-search-clear" onClick={clearRecentSearches}>
             Clear All
           </button>
@@ -484,8 +656,15 @@ const Home = ({ favArray, setFavArray, setToastMessage }) => {
         <>
           <p className="results-count">Showing {currentInfo.count} characters</p>
           <p className="results-summary">
-            {favouriteCountOnPage} favourites on this page
+            {showOnlyFavourites
+              ? "Favourite-only mode is on"
+              : `${favouriteCountOnPage} favourites on this page`}
           </p>
+          <div className="results-stats">
+            <span className="results-stat-pill">Alive: {aliveCount}</span>
+            <span className="results-stat-pill">Dead: {deadCount}</span>
+            <span className="results-stat-pill">Unknown: {unknownCount}</span>
+          </div>
         </>
       )}
       <div className="row g-4 justify-content-center App--container">
@@ -493,11 +672,21 @@ const Home = ({ favArray, setFavArray, setToastMessage }) => {
         {!loading && error && (
           <div className="col-12">
             <div className="empty-state-box">
+              <div className="empty-state-icon">
+                <i className="fa-regular fa-face-frown"></i>
+              </div>
               <h3>No characters found</h3>
               <p>
-                {search
+                {showOnlyFavourites
+                  ? "No favourite characters matched your current filters. Try turning off favourite-only mode or clearing filters."
+                  : search
                   ? `No characters matched "${search}". Try a different search or clear your filters.`
                   : error}
+              </p>
+              <p className="empty-state-helper">
+                {hasActiveFilters
+                  ? "You can change the filters above or use a recent search to get back to results faster."
+                  : "Try a new search, use the random character button, or browse your favourites."}
               </p>
             </div>
           </div>
@@ -508,6 +697,7 @@ const Home = ({ favArray, setFavArray, setToastMessage }) => {
             setFavArray={setFavArray}
             setToastMessage={setToastMessage}
             results={displayedResults}
+            onViewDetails={saveScrollPosition}
           />
         )}
       </div>

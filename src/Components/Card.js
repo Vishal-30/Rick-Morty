@@ -77,7 +77,11 @@ export default function Card(props) {
                 </div>
                 <div className="card-episode-count">Episodes: {episode.length}</div>
                 <div className="card-actions-row">
-                  <Link to={`/character/${card.id}`} className="details-link-btn card-link-btn">
+                  <Link
+                    to={`/character/${card.id}`}
+                    className="details-link-btn card-link-btn"
+                    onClick={props.onViewDetails}
+                  >
                     View Details
                   </Link>
                   <button

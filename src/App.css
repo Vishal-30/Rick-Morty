@@ -172,6 +172,7 @@ body[data-theme="dark"] {
 
 .active-toggle {
   background-color: var(--pagination-active-bg);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
 .filter-bar {
@@ -226,6 +227,23 @@ body[data-theme="dark"] {
 .pagination-info {
   margin-bottom: 0.75rem;
   color: var(--muted-text);
+  font-weight: 600;
+}
+
+.results-stats {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.results-stat-pill {
+  border: 1px solid var(--border-soft);
+  border-radius: 999px;
+  padding: 0.4rem 0.85rem;
+  background-color: var(--surface-soft);
+  color: var(--text-color);
   font-weight: 600;
 }
 
@@ -819,6 +837,17 @@ body[data-theme="dark"] {
 
 .empty-state-box p {
   margin-bottom: 0;
+}
+
+.empty-state-icon {
+  font-size: 2.2rem;
+  margin-bottom: 0.75rem;
+  color: var(--muted-text);
+}
+
+.empty-state-helper {
+  margin-top: 0.8rem !important;
+  color: var(--muted-text);
 }
 
 .skeleton-card {
