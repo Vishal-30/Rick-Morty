@@ -7,7 +7,7 @@ const Navbar = ({ favCount, theme, toggleTheme }) => {
       <div className="container">
         <Link to="/" className="navbar-brand"> Rick & Morty </Link>
           <div className="navbar-links">
-            <NavLink to="/" className={({ isActive }) => isActive ? "nav-link nav-link-active" : "nav-link"}>CHARACTERS</NavLink>
+            <NavLink end to="/" className={({ isActive }) => isActive ? "nav-link nav-link-active" : "nav-link"}>CHARACTERS</NavLink>
             <NavLink to="/favourites" className={({ isActive }) => isActive ? "nav-link nav-link-active" : "nav-link"}>FAVOURITES ({favCount})</NavLink>
             <button
               className="theme-toggle-btn"
