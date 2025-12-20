@@ -116,10 +116,12 @@ function App() {
 const Home = ({ favArray, setFavArray, setToastMessage }) => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const searchParamsString = searchParams.toString();
   const charactersPerPage = 20;
   const hasInitializedFilters = useRef(false);
   const hasRestoredScroll = useRef(false);
   const isSyncingFromUrl = useRef(false);
+  const skipNextUrlWrite = useRef(false);
   const getInitialPage = () => {
     const page = Number(searchParams.get("page"));
     return page > 0 ? page : 1;
@@ -276,16 +278,23 @@ const Home = ({ favArray, setFavArray, setToastMessage }) => {
       return;
     }
 
-    const updatedSearches = [
-      search,
-      ...recentSearches.filter((item) => item.toLowerCase() !== search.toLowerCase()),
-    ].slice(0, 5);
+    setRecentSearches((prevSearches) => {
+      const updatedSearches = [
+        search,
+        ...prevSearches.filter((item) => item.toLowerCase() !== search.toLowerCase()),
+      ].slice(0, 5);
 
-    setRecentSearches(updatedSearches);
-    localStorage.setItem("recentSearches", JSON.stringify(updatedSearches));
+      localStorage.setItem("recentSearches", JSON.stringify(updatedSearches));
+      return updatedSearches;
+    });
   }, [search]);
 
   useEffect(() => {
+    if (skipNextUrlWrite.current) {
+      skipNextUrlWrite.current = false;
+      return;
+    }
+
     const nextParams = new URLSearchParams();
 
     if (search) {
@@ -313,7 +322,7 @@ const Home = ({ favArray, setFavArray, setToastMessage }) => {
       nextParams.set("page", pageNumber);
     }
 
-    if (nextParams.toString() !== searchParams.toString()) {
+    if (nextParams.toString() !== searchParamsString) {
       setSearchParams(nextParams, { replace: true });
     }
   }, [
@@ -325,7 +334,7 @@ const Home = ({ favArray, setFavArray, setToastMessage }) => {
     sort,
     showOnlyFavourites,
     pageNumber,
-    searchParams,
+    searchParamsString,
     setSearchParams,
   ]);
 
@@ -375,8 +384,9 @@ const Home = ({ favArray, setFavArray, setToastMessage }) => {
 
     if (didSyncFromUrl) {
       isSyncingFromUrl.current = true;
+      skipNextUrlWrite.current = true;
     }
-  }, [searchParams]);
+  }, [searchParamsString]);
 
   let displayedResults = results ? [...results] : [];
   let currentInfo = info;
