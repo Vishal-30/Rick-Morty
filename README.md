@@ -2,7 +2,9 @@
 
 Simple React frontend project built around the Rick and Morty API.
 
-This app was created as an early frontend practice project and focuses on core React concepts:
+Live URL: [https://rick-morty-git.netlify.app/](https://rick-morty-git.netlify.app/)
+
+This app was created as frontend project and focuses on core React concepts:
 
 - fetching and rendering API data
 - search by character name
@@ -18,18 +20,31 @@ This app was created as an early frontend practice project and focuses on core R
 - CSS
 - Rick and Morty API
 
+## Features
+
+- character search, filters, sorting, and pagination
+- favourites with localStorage
+- character details page
+- compare favourite characters
+- import and export favourites as JSON
+- dark and light theme
+- responsive layout
+
 ## Project Notes
 
 The codebase is intentionally simple and beginner-friendly. It is a small frontend-only app with no backend or database, designed to practice React hooks, component composition, routing, and basic state management.
 
-## Available Scripts
+## How To Run
 
-In the project directory, you can run:
+1. Install dependencies
+npm install
 
-### `npm start`
+2. Start the development server
+npm start
 
-Runs the app in development mode.
+3. Open the app in your browser
+http://localhost:3000
 
-### `npm run build`
+## Notes
 
-Builds the app for production.
+- This project uses the public Rick and Morty API.
