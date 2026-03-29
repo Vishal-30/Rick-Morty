@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 
+const episodeCache = {};
+const episodeRequests = {};
+
 const Episodes = (props) => {
   let [info, setInfo] = useState([]);
   let [loading, setLoading] = useState(true);
@@ -8,13 +11,55 @@ const Episodes = (props) => {
 
   let api = `https://rickandmortyapi.com/api/episode/${id}`;
   useEffect(() => {
+    let isMounted = true;
+
     (async function () {
+      if (episodeCache[id]) {
+        if (isMounted) {
+          setInfo(episodeCache[id]);
+          setLoading(false);
+        }
+        return;
+      }
+
       setLoading(true);
-      let data = await fetch(api).then((res) => res.json());
-      setInfo(data);
-      setLoading(false);
+
+      try {
+        if (!episodeRequests[id]) {
+          episodeRequests[id] = fetch(api).then(async (res) => {
+            const data = await res.json();
+
+            if (!res.ok) {
+              throw new Error(data.error || "Episode not found.");
+            }
+
+            return data;
+          });
+        }
+
+        let data = await episodeRequests[id];
+        episodeCache[id] = data;
+
+        if (isMounted) {
+          setInfo(data);
+        }
+      } catch (err) {
+        if (isMounted) {
+          setInfo({});
+        }
+      } finally {
+        delete episodeRequests[id];
+
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
     })();
-  }, [api]);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [api, id]);
 
   return (
     <div className="episode--item">

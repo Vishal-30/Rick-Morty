@@ -13,6 +13,7 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
+  useLocation,
   useNavigate,
   useSearchParams,
 } from "react-router-dom";
@@ -22,6 +23,7 @@ import "./App.css";
 function App() {
   const [toastMessage, setToastMessage] = useState("");
   const hasMountedFavourites = useRef(false);
+  const toastMessageRef = useRef("");
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem("theme") || "light";
   });
@@ -37,6 +39,10 @@ function App() {
   });
 
   useEffect(() => {
+    toastMessageRef.current = toastMessage;
+  }, [toastMessage]);
+
+  useEffect(() => {
     localStorage.setItem("favourites", JSON.stringify(favArray));
 
     if (!hasMountedFavourites.current) {
@@ -44,7 +50,7 @@ function App() {
       return;
     }
 
-    if (!toastMessage) {
+    if (!toastMessageRef.current) {
       setToastMessage("Favourites updated");
     }
   }, [favArray]);
@@ -76,44 +82,49 @@ function App() {
 
   return (
     <Router>
-      <div className="App">
-        <Navbar favCount={favArray.length} theme={theme} toggleTheme={toggleTheme} />
+      <div className="app-shell">
+        <div className="App">
+          <Navbar favCount={favArray.length} theme={theme} toggleTheme={toggleTheme} />
+        </div>
+        <main className="app-main">
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Home
+                  favArray={favArray}
+                  setFavArray={setFavArray}
+                  setToastMessage={setToastMessage}
+                />
+              }
+            />
+            <Route
+              path="/character/:id"
+              element={<CharacterDetails setToastMessage={setToastMessage} />}
+            />
+            <Route
+              path="/favourites"
+              element={
+                <Favourites
+                  favArray={favArray}
+                  setFavArray={setFavArray}
+                  setToastMessage={setToastMessage}
+                />
+              }
+            />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </main>
+        <Footer />
+        <ToastMessage message={toastMessage} />
+        <BackToTop />
       </div>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <Home
-              favArray={favArray}
-              setFavArray={setFavArray}
-              setToastMessage={setToastMessage}
-            />
-          }
-        />
-        <Route
-          path="/character/:id"
-          element={<CharacterDetails setToastMessage={setToastMessage} />}
-        />
-        <Route
-          path="/favourites"
-          element={
-            <Favourites
-              favArray={favArray}
-              setFavArray={setFavArray}
-              setToastMessage={setToastMessage}
-            />
-          }
-        />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-      <ToastMessage message={toastMessage} />
-      <BackToTop />
-      <Footer />
     </Router>
   );
 }
 
 const Home = ({ favArray, setFavArray, setToastMessage }) => {
+  const location = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const searchParamsString = searchParams.toString();
@@ -165,8 +176,9 @@ const Home = ({ favArray, setFavArray, setToastMessage }) => {
     params.set("species", species);
   }
 
-  let baseApi = `https://rickandmortyapi.com/api/character/?${params.toString()}`;
-  let api = `${baseApi}${params.toString() ? "&" : ""}page=${pageNumber}`;
+  const paramsString = params.toString();
+  let baseApi = `https://rickandmortyapi.com/api/character/?${paramsString}`;
+  let api = `${baseApi}${paramsString ? "&" : ""}page=${pageNumber}`;
 
   const fetchJson = async (url) => {
     let response = await fetch(url);
@@ -215,7 +227,7 @@ const Home = ({ favArray, setFavArray, setToastMessage }) => {
       setError("");
 
       try {
-        let firstPageUrl = `${baseApi}${params.toString() ? "&" : ""}page=1`;
+        let firstPageUrl = `${baseApi}${paramsString ? "&" : ""}page=1`;
         let firstPageData = await fetchJson(firstPageUrl);
 
         if (firstPageData.error) {
@@ -232,7 +244,7 @@ const Home = ({ favArray, setFavArray, setToastMessage }) => {
 
           for (let i = 2; i <= firstPageData.info.pages; i++) {
             remainingRequests.push(
-              fetchJson(`${baseApi}${params.toString() ? "&" : ""}page=${i}`)
+              fetchJson(`${baseApi}${paramsString ? "&" : ""}page=${i}`)
             );
           }
 
@@ -257,7 +269,7 @@ const Home = ({ favArray, setFavArray, setToastMessage }) => {
         setLoading(false);
       }
     })();
-  }, [baseApi, sort, origin]);
+  }, [baseApi, origin, paramsString, sort]);
 
   useEffect(() => {
     if (!hasInitializedFilters.current) {
@@ -272,6 +284,23 @@ const Home = ({ favArray, setFavArray, setToastMessage }) => {
 
     updatePageNumber(1);
   }, [search, status, gender, species, origin, sort]);
+
+  useEffect(() => {
+    if (!location.state?.resetHome) {
+      return;
+    }
+
+    setSearch("");
+    setStatus("");
+    setGender("");
+    setSpecies("");
+    setOrigin("");
+    setSort("");
+    setShowOnlyFavourites(false);
+    updatePageNumber(1);
+    setSearchParams(new URLSearchParams(), { replace: true });
+    navigate("/", { replace: true, state: null });
+  }, [location.state, navigate, setSearchParams]);
 
   useEffect(() => {
     if (!search.trim()) {
@@ -339,14 +368,15 @@ const Home = ({ favArray, setFavArray, setToastMessage }) => {
   ]);
 
   useEffect(() => {
-    const nextSearch = searchParams.get("name") || "";
-    const nextStatus = searchParams.get("status") || "";
-    const nextGender = searchParams.get("gender") || "";
-    const nextSpecies = searchParams.get("species") || "";
-    const nextOrigin = searchParams.get("origin") || "";
-    const nextSort = searchParams.get("sort") || "";
-    const nextFavourites = searchParams.get("favourites") === "true";
-    const nextPage = Number(searchParams.get("page")) > 0 ? Number(searchParams.get("page")) : 1;
+    const currentParams = new URLSearchParams(searchParamsString);
+    const nextSearch = currentParams.get("name") || "";
+    const nextStatus = currentParams.get("status") || "";
+    const nextGender = currentParams.get("gender") || "";
+    const nextSpecies = currentParams.get("species") || "";
+    const nextOrigin = currentParams.get("origin") || "";
+    const nextSort = currentParams.get("sort") || "";
+    const nextFavourites = currentParams.get("favourites") === "true";
+    const nextPage = Number(currentParams.get("page")) > 0 ? Number(currentParams.get("page")) : 1;
     let didSyncFromUrl = false;
 
     if (nextSearch !== search) {
@@ -386,7 +416,17 @@ const Home = ({ favArray, setFavArray, setToastMessage }) => {
       isSyncingFromUrl.current = true;
       skipNextUrlWrite.current = true;
     }
-  }, [searchParamsString]);
+  }, [
+    gender,
+    origin,
+    pageNumber,
+    search,
+    searchParamsString,
+    showOnlyFavourites,
+    sort,
+    species,
+    status,
+  ]);
 
   let displayedResults = results ? [...results] : [];
   let currentInfo = info;

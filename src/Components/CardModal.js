@@ -3,12 +3,13 @@ import { Link } from "react-router-dom";
 import Episodes from "./Episode";
 
 const CardModal = (props) => {
-  let { id, image, name, status, gender, location, origin, species, episode } = props.card;
+  const { card, closeModal } = props;
+  const { id, image, name, status, gender, location, origin, species, episode } = card;
 
   useEffect(() => {
     const closeOnEscape = (event) => {
       if (event.key === "Escape") {
-        props.closeModal();
+        closeModal();
       }
     };
 
@@ -19,11 +20,11 @@ const CardModal = (props) => {
       document.body.style.overflow = "auto";
       window.removeEventListener("keydown", closeOnEscape);
     };
-  }, [props.closeModal]);
+  }, [closeModal]);
 
   return (
     <div className="modal">
-      <div onClick={props.closeModal} className="overlay"></div>
+      <div onClick={closeModal} className="overlay"></div>
       <div className="modal-content">
         <div className="modal-layout">
           <div className="modal-left">
@@ -59,12 +60,12 @@ const CardModal = (props) => {
                 <Episodes key={index} idNum={e.substring(e.lastIndexOf("/") + 1)} />
               ))}
             </div>
-            <Link to={`/character/${id}`} className="details-link-btn" onClick={props.closeModal}>
+            <Link to={`/character/${id}`} className="details-link-btn" onClick={closeModal}>
               Open Full Details
             </Link>
           </div>
         </div>
-        <button className="close-modal" onClick={props.closeModal}>
+        <button className="close-modal" onClick={closeModal}>
           X
         </button>
       </div>

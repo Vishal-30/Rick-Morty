@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import Card from "./Components/Card";
 import Pagination from "./Components/Pagination";
 import Search from "./Components/Search";
 
 const Favourites = ({ favArray, setFavArray, setToastMessage }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const charactersPerPage = 20;
   const [pageNumber, setPageNumber] = useState(1);
   const [search, setSearch] = useState("");
@@ -53,6 +56,21 @@ const Favourites = ({ favArray, setFavArray, setToastMessage }) => {
     localStorage.setItem("firstCompareId", firstCompareId);
     localStorage.setItem("secondCompareId", secondCompareId);
   }, [firstCompareId, secondCompareId]);
+
+  useEffect(() => {
+    if (!location.state?.resetFavourites) {
+      return;
+    }
+
+    setPageNumber(1);
+    setSearch("");
+    setSort("");
+    setStatusFilter("");
+    setSpeciesFilter("");
+    setFirstCompareId("");
+    setSecondCompareId("");
+    navigate("/favourites", { replace: true, state: null });
+  }, [location.state, navigate]);
 
   const startIndex = (pageNumber - 1) * charactersPerPage;
   const endIndex = startIndex + charactersPerPage;

@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Episodes from "./Episode";
 
+const characterCache = {};
+const characterRequests = {};
+
 const CharacterDetails = ({ setToastMessage }) => {
   const { id } = useParams();
   const [character, setCharacter] = useState(null);
@@ -9,26 +12,70 @@ const CharacterDetails = ({ setToastMessage }) => {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    let isMounted = true;
+
     (async function () {
       setLoading(true);
       setError("");
+      setCharacter(null);
+
+      if (characterCache[id]) {
+        if (isMounted) {
+          setCharacter(characterCache[id]);
+          setLoading(false);
+        }
+        return;
+      }
 
       try {
-        let data = await fetch(`https://rickandmortyapi.com/api/character/${id}`).then((res) =>
-          res.json()
-        );
+        if (!characterRequests[id]) {
+          characterRequests[id] = fetch(`https://rickandmortyapi.com/api/character/${id}`).then(
+            async (res) => {
+              const data = await res.json();
 
-        if (data.error) {
-          setError(data.error);
-        } else {
+              if (!res.ok) {
+                const requestError = new Error(
+                  data.error || "Something went wrong. Please try again."
+                );
+                requestError.status = res.status;
+                throw requestError;
+              }
+
+              return data;
+            }
+          );
+        }
+
+        let data = await characterRequests[id];
+        characterCache[id] = data;
+
+        if (isMounted) {
           setCharacter(data);
         }
       } catch (err) {
-        setError("Something went wrong. Please try again.");
+        if (!isMounted) {
+          return;
+        }
+
+        if (err.status === 429) {
+          setError("Too many requests right now. Please wait a few seconds and try again.");
+        } else if (err.message) {
+          setError(err.message);
+        } else {
+          setError("Something went wrong. Please try again.");
+        }
       } finally {
-        setLoading(false);
+        delete characterRequests[id];
+
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     })();
+
+    return () => {
+      isMounted = false;
+    };
   }, [id]);
 
   const copyCharacterLink = async () => {
